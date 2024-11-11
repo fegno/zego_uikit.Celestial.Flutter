@@ -1,4 +1,5 @@
 export 'dialogs.dart';
+export 'slider.dart';
 export 'draggable_bottom_sheet.dart';
 export 'input_board_wrapper.dart';
 export 'more_button.dart';

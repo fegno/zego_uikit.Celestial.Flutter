@@ -1,6 +1,10 @@
+// Dart imports:
 import 'dart:async';
+
+// Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
 import 'package:zego_uikit/src/services/uikit_service.dart';
 
 class ZegoStreamCanvasViewCreateQueue {
@@ -14,7 +18,10 @@ class ZegoStreamCanvasViewCreateQueue {
   void clear() {
     _isTaskRunning = false;
     _taskList = [];
-    _completer?.complete();
+
+    if (!(_completer?.isCompleted ?? true)) {
+      _completer?.complete();
+    }
   }
 
   void completeCurrentTask() {
@@ -37,9 +44,11 @@ class ZegoStreamCanvasViewCreateQueue {
           subTag: 'queue',
         );
 
-        _taskList.removeAt(0);
-        _isTaskRunning = false;
-        _doTask();
+        if (_taskList.isNotEmpty) {
+          _taskList.removeAt(0);
+          _isTaskRunning = false;
+          _doTask();
+        }
       },
     );
 

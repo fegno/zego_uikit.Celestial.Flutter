@@ -124,7 +124,13 @@ class ZegoUIKitAdvanceInvitationSendProtocol {
             return inviteeMap['user_id'] as String? ?? '';
           }).toList();
         }
-      } catch (e) {}
+      } catch (e) {
+        ZegoLoggerService.logInfo(
+          'fromJson, e:$e',
+          tag: 'uikit',
+          subTag: 'ZegoUIKitAdvanceInvitationSendProtocol',
+        );
+      }
     }
 
     return ZegoUIKitAdvanceInvitationSendProtocol(

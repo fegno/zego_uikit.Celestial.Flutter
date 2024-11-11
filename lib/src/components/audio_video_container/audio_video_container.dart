@@ -100,6 +100,7 @@ class _ZegoAudioVideoContainerState extends State<ZegoAudioVideoContainer> {
     }
 
     if (widget.sources.contains(ZegoAudioVideoContainerSource.user)) {
+      onUserListUpdated(ZegoUIKit().getAllUsers());
       subscriptions.add(
         ZegoUIKit().getUserListStream().listen(onUserListUpdated),
       );
@@ -117,6 +118,11 @@ class _ZegoAudioVideoContainerState extends State<ZegoAudioVideoContainer> {
     if (widget.sources.contains(ZegoAudioVideoContainerSource.virtualUser)) {
       onVirtualUsersUpdated();
       widget.virtualUsersNotifier?.addListener(onVirtualUsersUpdated);
+    }
+
+    if (widget.sources.contains(ZegoAudioVideoContainerSource.audioVideo) ||
+        widget.sources.contains(ZegoAudioVideoContainerSource.screenSharing)) {
+      onStreamListUpdated(ZegoUIKit().getAudioVideoList());
     }
   }
 

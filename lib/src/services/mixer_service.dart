@@ -25,7 +25,7 @@ mixin ZegoMixerService {
     return ZegoUIKitCore.shared.stopMixerTask(task);
   }
 
-  /// [userSoundIDs] is a map<user id, sound id>
+  /// *[userSoundIDs], a map<user id, sound id>
   Future<void> startPlayMixAudioVideo(
     String mixerID,
     List<ZegoUIKitUser> users,

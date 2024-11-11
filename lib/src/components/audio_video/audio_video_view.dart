@@ -67,80 +67,136 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
 
   Widget videoView() {
     if (widget.user == null) {
+      ZegoLoggerService.logInfo(
+        '${widget.user?.id}\'s is null',
+        tag: 'uikit-component',
+        subTag: 'audio video view',
+      );
       return Container(color: Colors.transparent);
     }
 
+    ZegoLoggerService.logInfo(
+      '${widget.user?.id}\'s getUserListStream',
+      tag: 'uikit-component',
+      subTag: 'audio video view',
+    );
+
+    return userListListenerBuilder(
+      child: userViewListenerBuilder(
+        childBuilder: (Widget audioVideoView) {
+          return userCameraStateListenerBuilder(
+            child: audioVideoView,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget userListListenerBuilder({
+    required Widget child,
+  }) {
     return StreamBuilder<List<ZegoUIKitUser>>(
       stream: ZegoUIKit().getUserListStream(),
       builder: (context, snapshot) {
-        return ZegoUIKit().getUser(widget.user!.id).isEmpty()
-            ? Container()
-            : ValueListenableBuilder<bool>(
-                valueListenable:
-                    ZegoUIKit().getCameraStateNotifier(widget.user!.id),
-                builder: (context, isCameraOn, _) {
-                  if (!isCameraOn) {
-                    ZegoLoggerService.logInfo(
-                      '${widget.user?.id}\'s camera is not open',
-                      tag: 'uikit-component',
-                      subTag: 'audio video view',
-                    );
+        ZegoLoggerService.logInfo(
+          '${widget.user?.id}\'s getUser ${ZegoUIKit().getUser(widget.user!.id)}',
+          tag: 'uikit-component',
+          subTag: 'audio video view',
+        );
 
-                    /// hide video view when use close camera
-                    return Container(color: Colors.transparent);
-                  }
+        return child;
+      },
+    );
+  }
 
-                  return SizedBox.expand(
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        return ValueListenableBuilder<Widget?>(
-                          valueListenable: ZegoUIKit()
-                              .getAudioVideoViewNotifier(widget.user!.id),
-                          builder: (context, userView, _) {
-                            if (userView == null) {
-                              ZegoLoggerService.logError(
-                                '${widget.user?.id}\'s view is null',
-                                tag: 'uikit-component',
-                                subTag: 'audio video view',
-                              );
-
-                              /// hide video view when use not found
-                              return Container(color: Colors.transparent);
-                            }
-
-                            ZegoLoggerService.logInfo(
-                              'render ${widget.user?.id}\'s view ${userView.hashCode}',
-                              tag: 'uikit-component',
-                              subTag: 'audio video view',
-                            );
-
-                            return StreamBuilder(
-                              stream: NativeDeviceOrientationCommunicator()
-                                  .onOrientationChanged(),
-                              builder: (context,
-                                  AsyncSnapshot<NativeDeviceOrientation>
-                                      asyncResult) {
-                                if (asyncResult.hasData) {
-                                  /// Do not update ui when ui is building !!!
-                                  /// use postFrameCallback to update videoSize
-                                  WidgetsBinding.instance
-                                      .addPostFrameCallback((_) {
-                                    ///  notify sdk to update video render orientation
-                                    ZegoUIKit().updateAppOrientation(
-                                      deviceOrientationMap(asyncResult.data!),
-                                    );
-                                  });
-                                }
-                                return userView;
-                              },
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  );
-                },
+  Widget userCameraStateListenerBuilder({
+    required Widget child,
+  }) {
+    return ZegoUIKit().getUser(widget.user!.id).isEmpty()
+        ? Container()
+        : ValueListenableBuilder<bool>(
+            valueListenable:
+                ZegoUIKit().getCameraStateNotifier(widget.user!.id),
+            builder: (context, isCameraOn, _) {
+              ZegoLoggerService.logInfo(
+                '${widget.user?.id}\'s camera changed $isCameraOn',
+                tag: 'uikit-component',
+                subTag: 'audio video view',
               );
+
+              if (!isCameraOn) {
+                ZegoLoggerService.logInfo(
+                  '${widget.user?.id}\'s camera is not open',
+                  tag: 'uikit-component',
+                  subTag: 'audio video view',
+                );
+
+                /// hide video view when use close camera
+                return Container(color: Colors.transparent);
+              }
+
+              return child;
+            },
+          );
+  }
+
+  Widget userViewListenerBuilder({
+    required Widget Function(
+      Widget audioVideoView,
+    ) childBuilder,
+  }) {
+    return SizedBox.expand(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return ValueListenableBuilder<Widget?>(
+            valueListenable:
+                ZegoUIKit().getAudioVideoViewNotifier(widget.user!.id),
+            builder: (context, userView, _) {
+              if (userView == null) {
+                ZegoLoggerService.logError(
+                  '${widget.user?.id}\'s view is null',
+                  tag: 'uikit-component',
+                  subTag: 'audio video view',
+                );
+
+                /// hide video view when use not found
+                return Container(color: Colors.transparent);
+              }
+
+              ZegoLoggerService.logInfo(
+                'render ${widget.user?.id}\'s view ${userView.hashCode}',
+                tag: 'uikit-component',
+                subTag: 'audio video view',
+              );
+
+              return deviceOrientationListenerBuilder(
+                child: childBuilder(userView),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Widget deviceOrientationListenerBuilder({
+    required Widget child,
+  }) {
+    return StreamBuilder(
+      stream: NativeDeviceOrientationCommunicator().onOrientationChanged(),
+      builder: (context, AsyncSnapshot<NativeDeviceOrientation> asyncResult) {
+        if (asyncResult.hasData) {
+          /// Do not update ui when ui is building !!!
+          /// use postFrameCallback to update videoSize
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ///  notify sdk to update video render orientation
+            ZegoUIKit().updateAppOrientation(
+              deviceOrientationMap(asyncResult.data!),
+            );
+          });
+        }
+
+        return child;
       },
     );
   }

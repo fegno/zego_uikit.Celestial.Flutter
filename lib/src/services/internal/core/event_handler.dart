@@ -3,7 +3,6 @@ import 'dart:async';
 import 'dart:convert';
 
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
@@ -49,7 +48,8 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
           playerState: ZegoPlayerState.NoPlay,
         );
         ZegoLoggerService.logInfo(
-          'stream dict add ${stream.streamID} for ${stream.user.userID}, ${coreData.streamDic}',
+          'stream dict add ${stream.streamID} for ${stream.user.userID}, '
+          'dict: ${coreData.streamDic}',
           tag: 'uikit-service-core',
           subTag: 'event',
         );

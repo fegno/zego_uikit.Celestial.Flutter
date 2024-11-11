@@ -71,43 +71,36 @@ public class ZegoUikitPlugin implements FlutterPlugin, MethodCallHandler, Activi
             result.notImplemented();
         }
     }
-
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         Log.d("uikit plugin", "onDetachedFromEngine");
 
         methodChannel.setMethodCallHandler(null);
     }
-
-
     @Override
     public void onAttachedToActivity(ActivityPluginBinding activityPluginBinding) {
         Log.d("uikit plugin", "onAttachedToActivity");
 
         activityBinding = activityPluginBinding;
     }
-
     @Override
     public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding activityPluginBinding) {
         Log.d("uikit plugin", "onReattachedToActivityForConfigChanges");
 
         activityBinding = activityPluginBinding;
     }
-
     @Override
     public void onDetachedFromActivityForConfigChanges() {
         Log.d("uikit plugin", "onDetachedFromActivityForConfigChanges");
 
         activityBinding = null;
     }
-
     @Override
     public void onDetachedFromActivity() {
         Log.d("uikit plugin", "onDetachedFromActivity");
 
         activityBinding = null;
     }
-
     public void backToDesktop(Boolean nonRoot) {
         Log.i("uikit plugin", "backToDesktop" + " nonRoot:" + nonRoot);
 
@@ -117,7 +110,6 @@ public class ZegoUikitPlugin implements FlutterPlugin, MethodCallHandler, Activi
             Log.e("uikit plugin, backToDesktop", e.toString());
         }
     }
-
     public Boolean isLockScreen() {
         Log.i("uikit plugin", "isLockScreen");
 
@@ -138,7 +130,6 @@ public class ZegoUikitPlugin implements FlutterPlugin, MethodCallHandler, Activi
 
         return isLocked;
     }
-
     private boolean isAppRunning() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE) {
             ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);

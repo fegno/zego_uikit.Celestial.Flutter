@@ -11,7 +11,6 @@ export 'audio_video_container/layout_gallery.dart';
 export 'audio_video_container/layout_picture_in_picture.dart';
 export 'audio_video_container/picture_in_picture/defines.dart';
 export 'defines.dart';
-export 'effect/beauty_effect_slider.dart';
 export 'functions.dart';
 export 'internal/icon_defines.dart';
 export 'leave_button.dart';

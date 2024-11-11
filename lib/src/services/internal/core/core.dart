@@ -748,11 +748,11 @@ class ZegoUIKitCore
   }
 
   Future<void> startPlayAllAudioVideo() async {
-    coreData.muteAllPlayStreamAudioVideo(false);
+    await coreData.muteAllPlayStreamAudioVideo(false);
   }
 
   Future<void> stopPlayAllAudioVideo() async {
-    coreData.muteAllPlayStreamAudioVideo(true);
+    await coreData.muteAllPlayStreamAudioVideo(true);
   }
 
   Future<bool> muteUserAudioVideo(String userID, bool mute) async {
@@ -1141,11 +1141,6 @@ class ZegoUIKitCore
 
   void updateAppOrientation(DeviceOrientation orientation) {
     if (coreData.pushVideoConfig.orientation == orientation) {
-      ZegoLoggerService.logInfo(
-        'app orientation is equal',
-        tag: 'uikit-service-core',
-        subTag: 'update app orientation',
-      );
       return;
     } else {
       ZegoLoggerService.logInfo(

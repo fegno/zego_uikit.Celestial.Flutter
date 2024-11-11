@@ -5,7 +5,7 @@ mixin ZegoRoomService {
 
   /// join room
   ///
-  /// @token
+  /// *[token]
   /// The token issued by the developer's business server is used to ensure security.
   /// For the generation rules, please refer to [Using Token Authentication] (https://doc-zh.zego.im/article/10360), the default is an empty string, that is, no authentication.
   ///

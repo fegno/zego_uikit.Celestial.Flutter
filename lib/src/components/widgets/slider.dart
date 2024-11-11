@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:zego_uikit/src/components/screen_util/screen_util.dart';
-import 'package:zego_uikit/src/services/services.dart';
 
 /// @nodoc
-class ZegoBeautyEffectSlider extends StatefulWidget {
-  final BeautyEffectType effectType;
+class ZegoSlider extends StatefulWidget {
   final int defaultValue;
 
   final double? thumpHeight;
@@ -32,9 +30,11 @@ class ZegoBeautyEffectSlider extends StatefulWidget {
   /// the radius of the Slider's thumb.
   final double? thumbRadius;
 
-  const ZegoBeautyEffectSlider({
+  ///  slider change callback
+  final void Function(int value)? onChanged;
+
+  const ZegoSlider({
     Key? key,
-    required this.effectType,
     required this.defaultValue,
     this.thumpHeight,
     this.trackHeight,
@@ -45,14 +45,15 @@ class ZegoBeautyEffectSlider extends StatefulWidget {
     this.inactiveTrackColor,
     this.thumbColor,
     this.thumbRadius,
+    this.onChanged,
   }) : super(key: key);
 
   @override
-  State<ZegoBeautyEffectSlider> createState() => _ZegoBeautyEffectSliderState();
+  State<ZegoSlider> createState() => _ZegoSliderState();
 }
 
 /// @nodoc
-class _ZegoBeautyEffectSliderState extends State<ZegoBeautyEffectSlider> {
+class _ZegoSliderState extends State<ZegoSlider> {
   var valueNotifier = ValueNotifier<int>(50);
 
   @override
@@ -102,8 +103,7 @@ class _ZegoBeautyEffectSliderState extends State<ZegoBeautyEffectSlider> {
               onChanged: (double defaultValue) {
                 valueNotifier.value = defaultValue.toInt();
 
-                ZegoUIKit()
-                    .setBeautifyValue(defaultValue.toInt(), widget.effectType);
+                widget.onChanged?.call(defaultValue.toInt());
               },
             );
           },
