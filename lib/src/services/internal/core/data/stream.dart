@@ -1,17 +1,18 @@
 // Dart imports:
 import 'dart:async';
-import 'dart:collection';
 import 'dart:io' show Platform;
 
-// Package imports:
+// Flutter imports:
 import 'package:flutter/cupertino.dart';
+
+// Package imports:
 import 'package:zego_express_engine/zego_express_engine.dart';
 
 // Project imports:
-import 'package:zego_uikit/src/services/internal/internal.dart';
-import 'package:zego_uikit/src/services/services.dart';
 import 'package:zego_uikit/src/channel/platform_interface.dart';
 import 'package:zego_uikit/src/services/internal/core/data/canvas_view_create_queue.dart';
+import 'package:zego_uikit/src/services/internal/internal.dart';
+import 'package:zego_uikit/src/services/services.dart';
 
 class ZegoUIKitCoreDataStreamData {
   String userID;
@@ -285,6 +286,22 @@ mixin ZegoUIKitCoreDataStream {
       subTag: 'start publish stream',
     );
 
+    if (Platform.isIOS) {
+      /// queue maybe stack without render(get view id) by start preview
+      final localStreamChannel = getLocalStreamChannel(streamType);
+      if (localStreamChannel.viewID == -1 &&
+          localStreamChannel.view.value != null) {
+        ZegoLoggerService.logInfo(
+          'force update view to get view id on StartPreview',
+          tag: 'uikit-stream',
+          subTag: 'start publish stream',
+        );
+
+        /// force update, get view id
+        notifyStreamListControl(streamType);
+      }
+    }
+
     await createLocalUserVideoViewQueue(
       streamType: streamType,
       onViewCreated: onViewCreatedByStartPublishingStream,
@@ -482,12 +499,6 @@ mixin ZegoUIKitCoreDataStream {
     required void Function(ZegoStreamType) onViewCreated,
   }) async {
     if (isCanvasViewCreateByQueue) {
-      ZegoLoggerService.logInfo(
-        'add to queue',
-        tag: 'uikit-stream',
-        subTag: 'create local user video view',
-      );
-
       final localStreamChannel = getLocalStreamChannel(streamType);
       if (localStreamChannel.viewID != -1 &&
           localStreamChannel.view.value != null) {
@@ -496,6 +507,12 @@ mixin ZegoUIKitCoreDataStream {
           onViewCreated: onViewCreated,
         );
       } else {
+        ZegoLoggerService.logInfo(
+          'add to queue',
+          tag: 'uikit-stream',
+          subTag: 'create local user video view',
+        );
+
         canvasViewCreateQueue.addTask(() async {
           await createLocalUserVideoView(
             streamType: streamType,
@@ -523,6 +540,7 @@ mixin ZegoUIKitCoreDataStream {
       tag: 'uikit-stream',
       subTag: 'create local user video view',
     );
+
     if (localStreamChannel.viewID != -1 &&
         localStreamChannel.view.value != null) {
       ZegoLoggerService.logInfo(
@@ -650,12 +668,6 @@ mixin ZegoUIKitCoreDataStream {
     String streamUserID,
   ) async {
     if (isCanvasViewCreateByQueue) {
-      ZegoLoggerService.logInfo(
-        'add to queue',
-        tag: 'uikit-stream',
-        subTag: 'start play stream',
-      );
-
       final targetUserIndex = ZegoUIKitCore.shared.coreData.remoteUsersList
           .indexWhere((user) => streamUserID == user.id);
       final targetUser =
@@ -668,6 +680,12 @@ mixin ZegoUIKitCoreDataStream {
           targetUserStreamChannel.view.value != null) {
         await startPlayingStream(streamID, streamUserID);
       } else {
+        ZegoLoggerService.logInfo(
+          'add to queue',
+          tag: 'uikit-stream',
+          subTag: 'start play stream',
+        );
+
         canvasViewCreateQueue.addTask(
           () async {
             await startPlayingStream(streamID, streamUserID);
