@@ -36,6 +36,10 @@ class ZegoUIKitCoreDataStreamData {
 mixin ZegoUIKitCoreDataStream {
   bool isEnablePlatformView = false;
   final canvasViewCreateQueue = ZegoStreamCanvasViewCreateQueue();
+  bool isPlayingStream = false;
+  bool isPublishingStream = false;
+  bool isPreviewing = false;
+  bool isEnableCustomVideoRender = false;
 
   bool get isCanvasViewCreateByQueue {
     if (Platform.isAndroid) {
@@ -87,6 +91,8 @@ mixin ZegoUIKitCoreDataStream {
       subTag: 'uninit',
     );
 
+    isEnableCustomVideoRender = false;
+
     isEnablePlatformView = false;
     canvasViewCreateQueue.clear();
 
@@ -101,6 +107,10 @@ mixin ZegoUIKitCoreDataStream {
 
     receiveSEIStreamCtrl?.close();
     receiveSEIStreamCtrl = null;
+
+    isPreviewing = false;
+    isPublishingStream = false;
+    isPlayingStream = false;
   }
 
   String getLocalStreamID(ZegoStreamType streamType) {
@@ -196,6 +206,9 @@ mixin ZegoUIKitCoreDataStream {
       ZegoUIKitCore.shared.coreData.localUser
           .destroyTextureRenderer(streamType: ZegoStreamType.screenSharing);
     }
+
+    isPublishingStream = false;
+    isPlayingStream = false;
   }
 
   Future<void> startPreview() async {
@@ -229,7 +242,9 @@ mixin ZegoUIKitCoreDataStream {
 
     ZegoExpressEngine.instance
       ..enableCamera(ZegoUIKitCore.shared.coreData.localUser.camera.value)
-      ..startPreview(canvas: previewCanvas);
+      ..startPreview(canvas: previewCanvas).then((_) {
+        isPreviewing = true;
+      });
   }
 
   Future<void> stopPreview() async {
@@ -242,7 +257,9 @@ mixin ZegoUIKitCoreDataStream {
     await ZegoUIKitCore.shared.coreData.localUser
         .destroyTextureRenderer(streamType: ZegoStreamType.main);
 
-    await ZegoExpressEngine.instance.stopPreview();
+    await ZegoExpressEngine.instance.stopPreview().then((_) {
+      isPreviewing = false;
+    });
   }
 
   Future<void> startPublishingStream({
@@ -327,7 +344,9 @@ mixin ZegoUIKitCoreDataStream {
         await ZegoExpressEngine.instance.muteMicrophone(
           !ZegoUIKitCore.shared.coreData.localUser.microphone.value,
         );
-        await ZegoExpressEngine.instance.startPreview(canvas: canvas);
+        await ZegoExpressEngine.instance.startPreview(canvas: canvas).then((_) {
+          isPreviewing = true;
+        });
         break;
       case ZegoStreamType.media:
         await ZegoExpressEngine.instance.setVideoSource(
@@ -364,10 +383,14 @@ mixin ZegoUIKitCoreDataStream {
         break;
     }
 
-    await ZegoExpressEngine.instance.startPublishingStream(
+    await ZegoExpressEngine.instance
+        .startPublishingStream(
       getLocalStreamID(streamType),
       channel: streamType.channel,
-    );
+    )
+        .then((_) {
+      isPublishingStream = true;
+    });
 
     notifyStreamListControl(streamType);
   }
@@ -408,7 +431,9 @@ mixin ZegoUIKitCoreDataStream {
 
     switch (streamType) {
       case ZegoStreamType.main:
-        await ZegoExpressEngine.instance.stopPreview();
+        await ZegoExpressEngine.instance.stopPreview().then((_) {
+          isPreviewing = false;
+        });
         break;
       case ZegoStreamType.media:
         await ZegoExpressEngine.instance.setVideoSource(
@@ -433,6 +458,8 @@ mixin ZegoUIKitCoreDataStream {
     await ZegoExpressEngine.instance
         .stopPublishingStream(channel: streamType.channel)
         .then((value) {
+      isPublishingStream = false;
+
       audioVideoListStreamCtrl?.add(getAudioVideoList());
       ZegoUIKitCore.shared.coreData.screenSharingListStreamCtrl
           ?.add(getAudioVideoList(streamType: ZegoStreamType.screenSharing));
@@ -472,8 +499,14 @@ mixin ZegoUIKitCoreDataStream {
     Function(int viewID) onViewCreated, {
     Key? key,
   }) async {
+    Key? canvasViewKey;
+    if (Platform.isIOS && isEnablePlatformView) {
+      /// iOS & platform view, express view id not callback sometimes, or call random
+      canvasViewKey = key;
+    }
+
     ZegoLoggerService.logInfo(
-      'with express',
+      'with express with key:$canvasViewKey',
       tag: 'uikit-stream',
       subTag: 'create canvas view',
     );
@@ -490,7 +523,7 @@ mixin ZegoUIKitCoreDataStream {
           onViewCreated.call(viewID);
         }
       },
-      key: key,
+      key: canvasViewKey,
     );
   }
 
@@ -569,6 +602,7 @@ mixin ZegoUIKitCoreDataStream {
 
           onViewCreated(streamType);
         },
+        key: localStreamChannel.globalKey.value,
       ).then((widget) {
         ZegoLoggerService.logInfo(
           'widget done, widget:$widget ${widget.hashCode}',
@@ -773,6 +807,7 @@ mixin ZegoUIKitCoreDataStream {
             streamType: streamType,
           );
         },
+        key: targetUserStreamChannel.globalKey.value,
       ).then((widget) {
         ZegoLoggerService.logInfo(
           'widget done, '
@@ -817,6 +852,8 @@ mixin ZegoUIKitCoreDataStream {
         streamID,
       )
           .then((_) {
+        isPlayingStream = true;
+
         ZegoLoggerService.logInfo(
           'finish play stream in ios with pip, '
           'stream id: $streamID, ',
@@ -832,6 +869,8 @@ mixin ZegoUIKitCoreDataStream {
         config: config,
       )
           .then((value) {
+        isPlayingStream = true;
+
         ZegoLoggerService.logInfo(
           'finish play, '
           'stream id: $streamID, ',

@@ -62,6 +62,28 @@ mixin ZegoChannelService {
   }
 
   Future<void> enableCustomVideoRender(bool isEnabled) async {
+    ZegoLoggerService.logInfo(
+      'isEnabled:$isEnabled, '
+      'roomState:${ZegoUIKitCore.shared.coreData.room.state.value}, '
+      'isPreviewing:${ZegoUIKitCore.shared.coreData.isPreviewing}, '
+      'isPublishingStream:${ZegoUIKitCore.shared.coreData.isPublishingStream}, '
+      'isPlayingStream:${ZegoUIKitCore.shared.coreData.isPlayingStream}, ',
+      tag: 'uikit-channel',
+      subTag: 'enableCustomVideoRender',
+    );
+
+    if (isEnabled == ZegoUIKitCore.shared.coreData.isEnableCustomVideoRender) {
+      ZegoLoggerService.logInfo(
+        'state is same, ignore',
+        tag: 'uikit-channel',
+        subTag: 'enableCustomVideoRender',
+      );
+
+      return;
+    }
+
+    ZegoUIKitCore.shared.coreData.isEnableCustomVideoRender = isEnabled;
+
     await ZegoUIKitPluginPlatform.instance.enableCustomVideoRender(isEnabled);
   }
 

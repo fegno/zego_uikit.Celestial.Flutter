@@ -144,6 +144,37 @@ mixin ZegoAudioVideoService {
     }
   }
 
+  /// get audio video view id notifier
+  int getAudioVideoViewID(
+    String? userID, {
+    ZegoStreamType streamType = ZegoStreamType.main,
+  }) {
+    if (userID == null ||
+        userID == ZegoUIKitCore.shared.coreData.localUser.id) {
+      switch (streamType) {
+        case ZegoStreamType.main:
+          return ZegoUIKitCore.shared.coreData.localUser.mainChannel.viewID;
+        case ZegoStreamType.media:
+        case ZegoStreamType.screenSharing:
+        case ZegoStreamType.mix:
+          return ZegoUIKitCore.shared.coreData.localUser.auxChannel.viewID;
+      }
+    } else {
+      final targetUser = ZegoUIKitCore.shared.coreData.remoteUsersList
+          .firstWhere((user) => user.id == userID,
+              orElse: ZegoUIKitCoreUser.empty);
+      switch (streamType) {
+        case ZegoStreamType.main:
+          return targetUser.mainChannel.viewID;
+        case ZegoStreamType.media:
+        case ZegoStreamType.screenSharing:
+        case ZegoStreamType.mix:
+          return targetUser.auxChannel.viewID;
+        // return targetUser.thirdChannel.view;
+      }
+    }
+  }
+
   ValueNotifier<ZegoUIKitPublishStreamQuality> getAudioVideoQualityNotifier(
     String? userID, {
     ZegoStreamType streamType = ZegoStreamType.main,

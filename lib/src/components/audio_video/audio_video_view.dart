@@ -1,5 +1,7 @@
 // Dart imports:
+import 'dart:async';
 import 'dart:core';
+import 'dart:io' show Platform;
 
 // Flutter imports:
 import 'package:flutter/material.dart';
@@ -52,6 +54,18 @@ class ZegoAudioVideoView extends StatefulWidget {
 }
 
 class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
+  Timer? viewIDGuardTimer;
+
+  int get userViewID => ZegoUIKit().getAudioVideoViewID(widget.user!.id);
+  bool get userViewIDIsEmpty => -1 == userViewID;
+
+  @override
+  void dispose() {
+    viewIDGuardTimer?.cancel();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return circleBorder(
@@ -84,8 +98,12 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
     return userListListenerBuilder(
       child: userViewListenerBuilder(
         childBuilder: (Widget audioVideoView) {
+          if (userViewIDIsEmpty) {
+            runViewIDTimeGuard();
+          }
+
           return userCameraStateListenerBuilder(
-            child: audioVideoView,
+            audioVideoView: audioVideoView,
           );
         },
       ),
@@ -110,7 +128,7 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
   }
 
   Widget userCameraStateListenerBuilder({
-    required Widget child,
+    required Widget audioVideoView,
   }) {
     return ZegoUIKit().getUser(widget.user!.id).isEmpty()
         ? Container()
@@ -119,7 +137,7 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
                 ZegoUIKit().getCameraStateNotifier(widget.user!.id),
             builder: (context, isCameraOn, _) {
               ZegoLoggerService.logInfo(
-                '${widget.user?.id}\'s camera changed $isCameraOn',
+                '${widget.user?.id}\'s camera changed $isCameraOn,',
                 tag: 'uikit-component',
                 subTag: 'audio video view',
               );
@@ -135,7 +153,23 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
                 return Container(color: Colors.transparent);
               }
 
-              return child;
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  ZegoLoggerService.logInfo(
+                    '${widget.user?.id}\'s constraints changed,'
+                    'width:${constraints.maxWidth}, '
+                    'height:${constraints.maxHeight}, ',
+                    tag: 'uikit-component',
+                    subTag: 'audio video view',
+                  );
+
+                  return SizedBox(
+                    width: constraints.maxWidth,
+                    height: constraints.maxHeight,
+                    child: audioVideoView,
+                  );
+                },
+              );
             },
           );
   }
@@ -323,5 +357,38 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
       case ZegoAvatarAlignment.end:
         return maxHeight - avatarHeight;
     }
+  }
+
+  void runViewIDTimeGuard() {
+    ZegoLoggerService.logInfo(
+      'guard run, ${widget.user?.id}\'s view id is:$userViewID',
+      tag: 'uikit-component',
+      subTag: 'audio video view',
+    );
+
+    viewIDGuardTimer?.cancel();
+    viewIDGuardTimer = null;
+
+    viewIDGuardTimer ??=
+        Timer.periodic(const Duration(milliseconds: 500), (timer) {
+      ZegoLoggerService.logInfo(
+        'guard check, ${widget.user?.id}\'s view id is:$userViewID',
+        tag: 'uikit-component',
+        subTag: 'audio video view',
+      );
+
+      if (!userViewIDIsEmpty) {
+        viewIDGuardTimer?.cancel();
+      } else {
+        ZegoLoggerService.logInfo(
+          'guard check, ${widget.user?.id}\'s view-id($userViewID) is not valid now, force update',
+          tag: 'uikit-component',
+          subTag: 'audio video view',
+        );
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          setState(() {});
+        });
+      }
+    });
   }
 }
