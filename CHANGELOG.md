@@ -1,7 +1,9 @@
-## 2.28.0
+## 2.28.0-beta.1
 
 - Features
-  - iOS support PIP
+  - Add iOS PIP related basic functions
+- Bugs
+  - Fix some issues with render iOS platform view
   
 ## 2.27.16
 
