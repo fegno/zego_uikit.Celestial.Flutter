@@ -19,9 +19,9 @@ class ZegoUIKitMediaPlayer extends StatefulWidget {
   const ZegoUIKitMediaPlayer({
     Key? key,
     required this.size,
+    required this.config,
     this.filePathOrURL,
     this.initPosition,
-    required this.config,
     ZegoUIKitMediaPlayerStyle? style,
     ZegoUIKitMediaPlayerEvent? event,
   })  : style = style ?? const ZegoUIKitMediaPlayerStyle(),
@@ -88,7 +88,6 @@ class _ZegoUIKitMediaPlayerState extends State<ZegoUIKitMediaPlayer> {
     topLeft = widget.initPosition ?? const Offset(10, 10);
 
     ZegoUIKit().getMediaPlayStateNotifier().addListener(onPlayStateChanged);
-
   }
 
   @override
@@ -107,63 +106,63 @@ class _ZegoUIKitMediaPlayerState extends State<ZegoUIKitMediaPlayer> {
   Widget build(BuildContext context) {
     checkAndShareMedia();
 
-    return Stack(
-      children: [
-        movable(
-          child: Container(
-            width: widget.size.width,
-            height: widget.size.height,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.grey,
-                width: 1.0,
-              ),
-              borderRadius: BorderRadius.circular(4.0),
-              color: Colors.black.withOpacity(0.5),
-            ),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return Stack(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Stack(
+          children: [
+            movable(
+              child: Container(
+                width: widget.size.width,
+                height: widget.size.height,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.grey,
+                    width: 1.0,
+                  ),
+                  borderRadius: BorderRadius.circular(4.0),
+                  color: Colors.black.withOpacity(0.5),
+                ),
+                child: Stack(
                   children: [
                     media(),
                     surface(constraints.maxWidth, constraints.maxHeight),
                   ],
-                );
-              },
+                ),
+              ),
+              constraints: constraints,
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 
-  Widget movable({required Widget child}) {
+  Widget movable({
+    required Widget child,
+    required BoxConstraints constraints,
+  }) {
     return Positioned(
       left: topLeft?.dx ?? 10,
       top: topLeft?.dy ?? 10,
       child: widget.config.isMovable
-          ? LayoutBuilder(
-              builder: (context, constraints) {
-                return GestureDetector(
-                  onPanUpdate: (details) {
-                    setState(() {
-                      var x = topLeft!.dx + details.delta.dx;
-                      var y = topLeft!.dy + details.delta.dy;
+          ? GestureDetector(
+              onPanUpdate: (details) {
+                setState(() {
+                  var x = topLeft!.dx + details.delta.dx;
+                  var y = topLeft!.dy + details.delta.dy;
 
-                      x = x.clamp(
-                        0.0,
-                        MediaQuery.of(context).size.width - widget.size.width,
-                      );
-                      y = y.clamp(
-                        0.0,
-                        MediaQuery.of(context).size.height - widget.size.height,
-                      );
-                      topLeft = Offset(x, y);
-                    });
-                  },
-                  child: child,
-                );
+                  x = x.clamp(
+                    0.0,
+                    constraints.maxWidth - widget.size.width,
+                  );
+                  y = y.clamp(
+                    0.0,
+                    constraints.maxHeight - widget.size.height,
+                  );
+                  topLeft = Offset(x, y);
+                });
               },
+              child: child,
             )
           : child,
     );
@@ -347,7 +346,7 @@ class _ZegoUIKitMediaPlayerState extends State<ZegoUIKitMediaPlayer> {
       builder: (context, isMute, _) {
         return Positioned(
           bottom: spacing + sliderHeight + spacing,
-          right: spacing,
+          right: 2 * spacing,
           child: GestureDetector(
             onTap: () {
               ZegoUIKit().muteMediaLocal(!isMute);
@@ -440,9 +439,7 @@ class _ZegoUIKitMediaPlayerState extends State<ZegoUIKitMediaPlayer> {
 
   Widget bigPlayButton(double maxViewWidth, double maxViewHeight) {
     final buttonSize = Size(maxViewWidth / 6.0, maxViewWidth / 6.0);
-    return Positioned(
-      bottom: (maxViewHeight - buttonSize.height) / 2,
-      left: (maxViewWidth - buttonSize.height) / 2,
+    return Center(
       child: ValueListenableBuilder<ZegoUIKitMediaPlayState>(
         valueListenable: ZegoUIKit().getMediaPlayStateNotifier(),
         builder: (context, playState, _) {
@@ -545,9 +542,8 @@ class _ZegoUIKitMediaPlayerState extends State<ZegoUIKitMediaPlayer> {
   }
 
   Widget closeButton() {
-    return Positioned(
-      top: spacing,
-      left: spacing,
+    return Align(
+      alignment: Alignment.topLeft,
       child: GestureDetector(
         onTap: widget.config.canControl ? destroyMedia : null,
         child: SizedBox(
@@ -565,9 +561,8 @@ class _ZegoUIKitMediaPlayerState extends State<ZegoUIKitMediaPlayer> {
   }
 
   Widget filePickButton() {
-    return Positioned(
-      top: spacing,
-      right: spacing,
+    return Align(
+      alignment: Alignment.topRight,
       child: GestureDetector(
         onTap: widget.config.canControl ? pickMediaToShare : null,
         child: SizedBox(
