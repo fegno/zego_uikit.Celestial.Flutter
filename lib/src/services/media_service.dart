@@ -148,7 +148,11 @@ mixin ZegoMediaService {
     List<String>? allowedExtensions,
   }) async {
     return ZegoUIKitCore.shared.pickMediaFile(
-      allowedExtensions: allowedExtensions,
+      allowedExtensions: allowedExtensions ??
+          [
+            ...zegoMediaVideoExtensions,
+            ...zegoMediaAudioExtensions,
+          ],
     );
   }
 

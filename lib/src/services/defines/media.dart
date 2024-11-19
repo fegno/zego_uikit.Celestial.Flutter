@@ -1,5 +1,99 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:zego_express_engine/zego_express_engine.dart';
+
+List<String> zegoMediaVideoExtensions = const [
+  "avi",
+  "flv",
+  "mkv",
+  "mov",
+  "mp4",
+  "mpeg",
+  "webm",
+  "wmv",
+];
+
+List<String> zegoMediaAudioExtensions = const [
+  "aac",
+  "midi",
+  "mp3",
+  "ogg",
+  "wav",
+];
+
+class ZegoUIKitMediaPlayerConfig {
+  /// extensions of pick files,
+  /// video: "avi","flv","mkv","mov","mp4","mpeg","webm","wmv",
+  /// audio: "aac","midi","mp3","ogg","wav",
+  final List<String>? allowedExtensions;
+
+  /// can control or not, such as
+  final bool canControl;
+
+  /// repeat or not
+  final bool enableRepeat;
+
+  /// auto start play after pick or set media url
+  final bool autoStart;
+
+  /// can this media moveable on parent
+  final bool isMovable;
+
+  /// show big play button central on player, or show a small control button
+  final bool isPlayButtonCentral;
+
+  /// show surface(controls) or not, default is true
+  final bool showSurface;
+
+  /// auto hide surface after [hideSurfaceSecond], default is true
+  final bool autoHideSurface;
+
+  /// hide surface in seconds, default is 3 second
+  final int hideSurfaceSecond;
+
+  const ZegoUIKitMediaPlayerConfig({
+    this.canControl = true,
+    this.showSurface = true,
+    this.autoStart = true,
+    this.isMovable = true,
+    this.autoHideSurface = true,
+    this.hideSurfaceSecond = 3,
+    this.enableRepeat = false,
+    this.isPlayButtonCentral = true,
+    this.allowedExtensions,
+  });
+}
+
+class ZegoUIKitMediaPlayerStyle {
+  final Widget? closeIcon;
+  final Widget? moreIcon;
+  final Widget? playIcon;
+  final Widget? pauseIcon;
+  final Widget? volumeIcon;
+  final Widget? volumeMuteIcon;
+  final TextStyle? durationTextStyle;
+
+  const ZegoUIKitMediaPlayerStyle({
+    this.closeIcon,
+    this.moreIcon,
+    this.playIcon,
+    this.pauseIcon,
+    this.volumeIcon,
+    this.volumeMuteIcon,
+    this.durationTextStyle,
+  });
+}
+
+class ZegoUIKitMediaPlayerEvent {
+  const ZegoUIKitMediaPlayerEvent({
+    this.onPlayStateChanged,
+  });
+
+  /// play state callback
+  final void Function(ZegoUIKitMediaPlayState)? onPlayStateChanged;
+}
 
 /// media type
 enum ZegoUIKitMediaType {
