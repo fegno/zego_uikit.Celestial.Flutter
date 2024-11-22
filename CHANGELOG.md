@@ -1,3 +1,9 @@
+## 2.28.0-beta.2
+
+- Bugs
+  - Fix the issue of media player moving out of range
+  - ZegoUIKitMediaPlayer's API had changed
+
 ## 2.28.0-beta.1
 
 - Features

@@ -1,7 +1,6 @@
 // Dart imports:
 import 'dart:async';
 import 'dart:core';
-import 'dart:io' show Platform;
 
 // Flutter imports:
 import 'package:flutter/material.dart';
