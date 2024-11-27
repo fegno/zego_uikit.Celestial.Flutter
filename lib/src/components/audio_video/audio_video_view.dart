@@ -68,17 +68,42 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
   @override
   Widget build(BuildContext context) {
     return circleBorder(
-      child: Stack(
-        children: [
-          background(),
-          videoView(),
-          foreground(),
-        ],
+      child: ValueListenableBuilder<bool>(
+        valueListenable: ZegoUIKit().getCameraStateNotifier(widget.user!.id),
+        builder: (context, isCameraOn, _) {
+          ZegoLoggerService.logInfo(
+            '${widget.user?.id}\'s camera changed $isCameraOn,',
+            tag: 'uikit-component',
+            subTag: 'audio video view',
+          );
+
+          return isCameraOn
+              ? Stack(
+                  children: [
+                    background(),
+                    videoView(
+                      isCameraOn: isCameraOn,
+                    ),
+                    foreground(),
+                  ],
+                )
+              : Stack(
+                  children: [
+                    videoView(
+                      isCameraOn: isCameraOn,
+                    ),
+                    background(),
+                    foreground(),
+                  ],
+                );
+        },
       ),
     );
   }
 
-  Widget videoView() {
+  Widget videoView({
+    required bool isCameraOn,
+  }) {
     if (widget.user == null) {
       ZegoLoggerService.logInfo(
         '${widget.user?.id}\'s is null',
@@ -88,22 +113,35 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
       return Container(color: Colors.transparent);
     }
 
-    ZegoLoggerService.logInfo(
-      '${widget.user?.id}\'s getUserListStream',
-      tag: 'uikit-component',
-      subTag: 'audio video view',
-    );
-
     return userListListenerBuilder(
       child: userViewListenerBuilder(
         childBuilder: (Widget audioVideoView) {
-          if (userViewIDIsEmpty) {
+          if (!isCameraOn) {
+            viewIDGuardTimer?.cancel();
+            viewIDGuardTimer = null;
+          } else if (userViewIDIsEmpty) {
             runViewIDTimeGuard();
           }
 
-          return userCameraStateListenerBuilder(
-            audioVideoView: audioVideoView,
-          );
+          return ZegoUIKit().getUser(widget.user!.id).isEmpty()
+              ? Container()
+              : LayoutBuilder(
+                  builder: (context, constraints) {
+                    ZegoLoggerService.logInfo(
+                      '${widget.user?.id}\'s constraints changed,'
+                      'width:${constraints.maxWidth}, '
+                      'height:${constraints.maxHeight}, ',
+                      tag: 'uikit-component',
+                      subTag: 'audio video view',
+                    );
+
+                    return SizedBox(
+                      width: constraints.maxWidth,
+                      height: constraints.maxHeight,
+                      child: audioVideoView,
+                    );
+                  },
+                );
         },
       ),
     );
@@ -124,53 +162,6 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
         return child;
       },
     );
-  }
-
-  Widget userCameraStateListenerBuilder({
-    required Widget audioVideoView,
-  }) {
-    return ZegoUIKit().getUser(widget.user!.id).isEmpty()
-        ? Container()
-        : ValueListenableBuilder<bool>(
-            valueListenable:
-                ZegoUIKit().getCameraStateNotifier(widget.user!.id),
-            builder: (context, isCameraOn, _) {
-              ZegoLoggerService.logInfo(
-                '${widget.user?.id}\'s camera changed $isCameraOn,',
-                tag: 'uikit-component',
-                subTag: 'audio video view',
-              );
-
-              if (!isCameraOn) {
-                ZegoLoggerService.logInfo(
-                  '${widget.user?.id}\'s camera is not open',
-                  tag: 'uikit-component',
-                  subTag: 'audio video view',
-                );
-
-                /// hide video view when use close camera
-                return Container(color: Colors.transparent);
-              }
-
-              return LayoutBuilder(
-                builder: (context, constraints) {
-                  ZegoLoggerService.logInfo(
-                    '${widget.user?.id}\'s constraints changed,'
-                    'width:${constraints.maxWidth}, '
-                    'height:${constraints.maxHeight}, ',
-                    tag: 'uikit-component',
-                    subTag: 'audio video view',
-                  );
-
-                  return SizedBox(
-                    width: constraints.maxWidth,
-                    height: constraints.maxHeight,
-                    child: audioVideoView,
-                  );
-                },
-              );
-            },
-          );
   }
 
   Widget userViewListenerBuilder({
