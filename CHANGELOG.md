@@ -1,3 +1,8 @@
+## 2.28.0-beta.3
+
+- Bugs
+  - Fix the issue not publish/play stream where the camera is not turned on on iOS when enable platform view(which used by PIP now)
+
 ## 2.28.0-beta.2
 
 - Bugs
