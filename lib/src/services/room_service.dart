@@ -15,6 +15,8 @@ mixin ZegoRoomService {
     String token = '',
     bool markAsLargeRoom = false,
   }) async {
+    final joinBeginTime = DateTime.now().millisecondsSinceEpoch;
+
     final joinRoomResult = await ZegoUIKitCore.shared.joinRoom(
       roomID,
       token: token,
@@ -31,6 +33,17 @@ mixin ZegoRoomService {
       ));
     }
 
+    ZegoUIKit().reporter().report(
+      event: ZegoUIKitReporter.eventLoginRoom,
+      params: {
+        ZegoUIKitReporter.eventKeyRoomID: roomID,
+        ZegoUIKitReporter.eventKeyToken: token,
+        ZegoUIKitReporter.eventKeyStartTime: joinBeginTime,
+        ZegoUIKitReporter.eventKeyErrorCode: joinRoomResult.errorCode,
+        ZegoUIKitReporter.eventKeyErrorMsg: joinRoomResult.extendedData,
+      },
+    );
+
     return joinRoomResult;
   }
 
@@ -38,6 +51,8 @@ mixin ZegoRoomService {
   Future<ZegoRoomLogoutResult> leaveRoom({
     String? targetRoomID,
   }) async {
+    final currentRoomID = ZegoUIKitCore.shared.coreData.room.id;
+
     final leaveRoomResult = await ZegoUIKitCore.shared.leaveRoom(
       targetRoomID: targetRoomID,
     );
@@ -50,6 +65,15 @@ mixin ZegoRoomService {
         method: 'leaveRoom',
       ));
     }
+
+    ZegoUIKit().reporter().report(
+      event: ZegoUIKitReporter.eventLogoutRoom,
+      params: {
+        ZegoUIKitReporter.eventKeyRoomID: currentRoomID,
+        ZegoUIKitReporter.eventKeyErrorCode: leaveRoomResult.errorCode,
+        ZegoUIKitReporter.eventKeyErrorMsg: leaveRoomResult.extendedData,
+      },
+    );
 
     return leaveRoomResult;
   }

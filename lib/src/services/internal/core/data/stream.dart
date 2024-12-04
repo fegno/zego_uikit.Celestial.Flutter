@@ -3,15 +3,17 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:io' show Platform;
 
-// Package imports:
+// Flutter imports:
 import 'package:flutter/cupertino.dart';
+
+// Package imports:
 import 'package:zego_express_engine/zego_express_engine.dart';
 
 // Project imports:
-import 'package:zego_uikit/src/services/internal/internal.dart';
-import 'package:zego_uikit/src/services/services.dart';
 import 'package:zego_uikit/src/channel/platform_interface.dart';
 import 'package:zego_uikit/src/services/internal/core/data/canvas_view_create_queue.dart';
+import 'package:zego_uikit/src/services/internal/internal.dart';
+import 'package:zego_uikit/src/services/services.dart';
 
 class ZegoUIKitCoreDataStreamData {
   String userID;

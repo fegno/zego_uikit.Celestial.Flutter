@@ -16,6 +16,7 @@ import 'package:zego_express_engine/zego_express_engine.dart';
 
 // Project imports:
 import 'package:zego_uikit/src/components/outside_room_audio_video/internal.dart';
+import 'package:zego_uikit/src/services/defines/reporter.dart';
 import 'package:zego_uikit/src/services/internal/core/data/media.dart';
 import 'package:zego_uikit/src/services/internal/core/data/message.dart';
 import 'package:zego_uikit/src/services/internal/core/data/network_timestamp.dart';
@@ -46,6 +47,7 @@ class ZegoUIKitCore
 
   static final ZegoUIKitCore shared = ZegoUIKitCore._internal();
 
+  final ZegoUIKitReporter reporter = ZegoUIKitReporter();
   final ZegoUIKitCoreData coreData = ZegoUIKitCoreData();
   var event = ZegoUIKitEvent();
 
@@ -54,19 +56,26 @@ class ZegoUIKitCore
   bool playingStreamInPIPUnderIOS = false;
   final expressEngineCreatedNotifier = ValueNotifier<bool>(false);
   List<StreamSubscription<dynamic>?> subscriptions = [];
+  String? version;
 
   Future<String> getZegoUIKitVersion() async {
-    final expressVersion = await ZegoExpressEngine.getVersion();
-    final mobileInfo = 'platform:${Platform.operatingSystem}, '
-        'version:${Platform.operatingSystemVersion}';
+    if (null == version) {
+      final expressVersion = await ZegoExpressEngine.getVersion();
+      final mobileInfo = 'platform:${Platform.operatingSystem}, '
+          'version:${Platform.operatingSystemVersion}';
 
-    const zegoUIKitVersion = 'zego_uikit: 2.28.0; ';
-    return '${zegoUIKitVersion}zego_express:$expressVersion,mobile:$mobileInfo';
+      const zegoUIKitVersion = 'zego_uikit: 2.28.0; ';
+      version ??=
+          '${zegoUIKitVersion}zego_express:$expressVersion,mobile:$mobileInfo';
+    }
+
+    return version!;
   }
 
   Future<void> init({
     required int appID,
     String appSign = '',
+    String token = '',
     bool? enablePlatformView,
     bool playingStreamInPIPUnderIOS = false,
     ZegoScenario scenario = ZegoScenario.Default,
@@ -100,6 +109,11 @@ class ZegoUIKitCore
       'scenario:$scenario, ',
       tag: 'uikit-service-core',
       subTag: 'init',
+    );
+
+    reporter.init(
+      appID: appID,
+      signOrToken: appSign.isNotEmpty ? appSign : token,
     );
 
     coreData.init();
@@ -197,6 +211,8 @@ class ZegoUIKitCore
       tag: 'uikit-service-core',
       subTag: 'uninit',
     );
+
+    reporter.unInit();
 
     coreData.uninit();
     event.uninit();
