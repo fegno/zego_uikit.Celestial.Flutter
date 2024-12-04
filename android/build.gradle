@@ -5,6 +5,8 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+
+        maven { url 'https://storage.zego.im/maven' }
     }
 
     dependencies {
@@ -16,6 +18,8 @@ rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
+
+        maven { url 'https://storage.zego.im/maven' }
     }
 }
 
@@ -41,4 +45,6 @@ android {
 }
 
 dependencies {
+    implementation("im.zego:uikitreport:0.2.2")
+    implementation("com.google.code.gson:gson:2.10.1")
 }
