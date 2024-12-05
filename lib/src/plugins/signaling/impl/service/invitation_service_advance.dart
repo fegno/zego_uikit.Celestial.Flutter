@@ -223,19 +223,6 @@ mixin ZegoPluginInvitationServiceAdvance {
     required String data,
     String? invitationID,
   }) async {
-    invitees.removeWhere((item) => ['', null].contains(item));
-    if (invitees.isEmpty) {
-      ZegoLoggerService.logError(
-        'invitees is empty',
-        tag: 'uikit-plugin-signaling',
-        subTag: 'advance invitation service',
-      );
-      return ZegoSignalingPluginCancelInvitationResult(
-        error: PlatformException(code: '', message: ''),
-        errorInvitees: <String>[],
-      );
-    }
-
     var targetInvitationID = invitationID;
     if (targetInvitationID?.isEmpty ?? true) {
       Map<String, dynamic>? extendedDataMap;
@@ -256,6 +243,21 @@ mixin ZegoPluginInvitationServiceAdvance {
         }
       }
     }
+
+    invitees.removeWhere((item) => ['', null].contains(item));
+    if (invitees.isEmpty) {
+      ZegoLoggerService.logError(
+        'invitees is empty',
+        tag: 'uikit-plugin-signaling',
+        subTag: 'advance invitation service',
+      );
+      return ZegoSignalingPluginCancelInvitationResult(
+        invitationID: targetInvitationID ?? '',
+        error: PlatformException(code: '', message: ''),
+        errorInvitees: <String>[],
+      );
+    }
+
     if (targetInvitationID?.isEmpty ?? true) {
       ZegoLoggerService.logError(
         'cancel invitation, invitationID is empty',
@@ -263,6 +265,7 @@ mixin ZegoPluginInvitationServiceAdvance {
         subTag: 'advance invitation service',
       );
       return ZegoSignalingPluginCancelInvitationResult(
+        invitationID: targetInvitationID ?? '',
         error: PlatformException(code: '-1', message: 'invitationID is empty'),
         errorInvitees: invitees,
       );
@@ -331,7 +334,9 @@ mixin ZegoPluginInvitationServiceAdvance {
         tag: 'uikit-plugin-signaling',
         subTag: 'advance invitation service',
       );
-      return const ZegoSignalingPluginResponseInvitationResult();
+      return ZegoSignalingPluginResponseInvitationResult(
+        invitationID: targetInvitationID ?? '',
+      );
     }
 
     ZegoLoggerService.logInfo(
@@ -367,7 +372,9 @@ mixin ZegoPluginInvitationServiceAdvance {
         tag: 'uikit-plugin-signaling',
         subTag: 'advance invitation service',
       );
-      return const ZegoSignalingPluginResponseInvitationResult();
+      return ZegoSignalingPluginResponseInvitationResult(
+        invitationID: invitationID,
+      );
     }
 
     return ZegoSignalingPluginCore.shared.coreData.advanceReject(
@@ -406,7 +413,9 @@ mixin ZegoPluginInvitationServiceAdvance {
         tag: 'uikit-plugin-signaling',
         subTag: 'advance invitation service',
       );
-      return const ZegoSignalingPluginResponseInvitationResult();
+      return ZegoSignalingPluginResponseInvitationResult(
+        invitationID: targetInvitationID,
+      );
     }
 
     return ZegoSignalingPluginCore.shared.coreData.advanceAccept(

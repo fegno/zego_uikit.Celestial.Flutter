@@ -94,19 +94,6 @@ mixin ZegoPluginInvitationService {
     required List<String> invitees,
     required String data,
   }) async {
-    invitees.removeWhere((item) => ['', null].contains(item));
-    if (invitees.isEmpty) {
-      ZegoLoggerService.logError(
-        'invitees is empty',
-        tag: 'uikit-plugin-signaling',
-        subTag: 'invitation service',
-      );
-      return ZegoSignalingPluginCancelInvitationResult(
-        error: PlatformException(code: '', message: ''),
-        errorInvitees: <String>[],
-      );
-    }
-
     var invitationID = '';
     Map<String, dynamic> extendedDataMap = {};
     try {
@@ -123,6 +110,20 @@ mixin ZegoPluginInvitationService {
         invitationID = ZegoSignalingPluginCore.shared.coreData
             .queryInvitationIDByInvitees(invitees);
       }
+    }
+
+    invitees.removeWhere((item) => ['', null].contains(item));
+    if (invitees.isEmpty) {
+      ZegoLoggerService.logError(
+        'invitees is empty',
+        tag: 'uikit-plugin-signaling',
+        subTag: 'invitation service',
+      );
+      return ZegoSignalingPluginCancelInvitationResult(
+        invitationID: invitationID,
+        error: PlatformException(code: '', message: ''),
+        errorInvitees: <String>[],
+      );
     }
 
     final pushConfig = ZegoSignalingPluginIncomingInvitationCancelPushConfig(
@@ -191,7 +192,9 @@ mixin ZegoPluginInvitationService {
         tag: 'uikit-plugin-signaling',
         subTag: 'invitation service',
       );
-      return const ZegoSignalingPluginResponseInvitationResult();
+      return ZegoSignalingPluginResponseInvitationResult(
+        invitationID: invitationID,
+      );
     }
 
     return ZegoSignalingPluginCore.shared.coreData.reject(invitationID, data);
@@ -211,7 +214,9 @@ mixin ZegoPluginInvitationService {
         tag: 'uikit-plugin-signaling',
         subTag: 'invitation service',
       );
-      return const ZegoSignalingPluginResponseInvitationResult();
+      return ZegoSignalingPluginResponseInvitationResult(
+        invitationID: invitationID,
+      );
     }
 
     return ZegoSignalingPluginCore.shared.coreData.reject(invitationID, data);
@@ -242,7 +247,9 @@ mixin ZegoPluginInvitationService {
         tag: 'uikit-plugin-signaling',
         subTag: 'invitation service',
       );
-      return const ZegoSignalingPluginResponseInvitationResult();
+      return ZegoSignalingPluginResponseInvitationResult(
+        invitationID: invitationID,
+      );
     }
 
     return ZegoSignalingPluginCore.shared.coreData.accept(invitationID, data);
