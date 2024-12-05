@@ -111,7 +111,7 @@ class ZegoUIKitCore
       subTag: 'init',
     );
 
-    reporter.init(
+    reporter.create(
       appID: appID,
       signOrToken: appSign.isNotEmpty ? appSign : token,
     );
@@ -212,7 +212,7 @@ class ZegoUIKitCore
       subTag: 'uninit',
     );
 
-    reporter.unInit();
+    reporter.destroy();
 
     coreData.uninit();
     event.uninit();

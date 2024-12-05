@@ -69,21 +69,25 @@ public class ZegoUikitPlugin implements FlutterPlugin, MethodCallHandler, Activi
             requestDismissKeyguard(context, activityBinding.getActivity());
 
             result.success(null);
-        } else if (call.method.equals(Defines.FLUTTER_API_FUNC_REPORTER_INIT)) {
+        } else if (call.method.equals(Defines.FLUTTER_API_FUNC_REPORTER_CREATE)) {
             int appID = call.argument("app_id");
             String signOrToken = call.argument("sign_token");
-            String userID = call.argument("user_id");
             Map<String, Object> commonParams = call.argument("params");
 
-            ReporterUtil.init(appID, signOrToken, userID, commonParams);
+            ReporterUtil.create(appID, signOrToken, commonParams);
             result.success(null);
-        } else if (call.method.equals(Defines.FLUTTER_API_FUNC_REPORTER_UNINIT)) {
-            ReporterUtil.unInit();
+        } else if (call.method.equals(Defines.FLUTTER_API_FUNC_REPORTER_DESTROY)) {
+            ReporterUtil.destroy();
             result.success(null);
         } else if (call.method.equals(Defines.FLUTTER_API_FUNC_REPORTER_UPDATE_TOKEN)) {
             String token = call.argument("token");
 
             ReporterUtil.updateToken(token);
+            result.success(null);
+        } else if (call.method.equals(Defines.FLUTTER_API_FUNC_REPORTER_UPDATE_COMMON_PARAMS)) {
+            Map<String, Object> commonParams = call.argument("params");
+
+            ReporterUtil.updateCommonParams(commonParams);
             result.success(null);
         } else if (call.method.equals(Defines.FLUTTER_API_FUNC_REPORTER_EVENT)) {
             String event = call.argument("event");
