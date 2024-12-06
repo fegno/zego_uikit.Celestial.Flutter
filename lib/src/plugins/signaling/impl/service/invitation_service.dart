@@ -11,6 +11,7 @@ import 'package:zego_plugin_adapter/zego_plugin_adapter.dart';
 import 'package:zego_uikit/src/plugins/signaling/defines.dart';
 import 'package:zego_uikit/src/plugins/signaling/impl/core/core.dart';
 import 'package:zego_uikit/src/plugins/signaling/impl/core/invitation_protocol.dart';
+import 'package:zego_uikit/src/plugins/signaling/impl/service/reporter.dart';
 import 'package:zego_uikit/src/services/services.dart';
 
 /// @nodoc
@@ -76,7 +77,8 @@ mixin ZegoPluginInvitationService {
       subTag: 'invitation service',
     );
 
-    return ZegoSignalingPluginCore.shared.coreData.invite(
+    return ZegoSignalingPluginCore.shared.coreData
+        .invite(
       invitees: invitees,
       type: type,
       timeout: timeout,
@@ -84,7 +86,24 @@ mixin ZegoPluginInvitationService {
       kitData: data,
       isAdvancedMode: isAdvancedMode,
       pushConfig: pluginPushConfig,
-    );
+    )
+        .then((result) {
+      ZegoUIKit().reporter().report(
+        event: ZegoUIKitSignalingReporter.eventCallInvite,
+        params: {
+          ZegoUIKitSignalingReporter.eventKeyInvitationID: result.invitationID,
+          ZegoUIKitSignalingReporter.eventKeyInvitees: invitees,
+          ZegoUIKitSignalingReporter.eventKeyInviteesCount: invitees.length,
+          ZegoUIKitSignalingReporter.eventKeyErrorUsers:
+              result.errorInvitees.keys,
+          ZegoUIKitSignalingReporter.eventKeyErrorUsersCount:
+              result.errorInvitees.keys.length,
+          ZegoUIKitSignalingReporter.eventKeyExtendedData: zimExtendedData,
+        },
+      );
+
+      return result;
+    });
   }
 
   /// cancel invitation to one or more specified users

@@ -1,5 +1,5 @@
 // Project imports:
-import 'dart:io';
+import 'package:flutter/cupertino.dart';
 
 import 'package:zego_uikit/src/channel/platform_interface.dart';
 import 'package:zego_uikit/src/services/uikit_service.dart';
@@ -37,23 +37,41 @@ class ZegoUIKitReporter {
   static String eventKeyErrorMsg = "msg";
   static String eventKeyErrorCode = "error";
 
-  /// 事件开始时的时间戳，毫秒
+  /// Timestamp at the start of the event, in milliseconds
   static String eventKeyStartTime = "start_time";
 
-  /// 开发客户端应用的平台类型，例如 android、ios、flutter、rn、uniApp、web
+  /// Platform type for developing Client application, such as android, ios, flutter, rn, uniApp, web
   static String eventKeyPlatform = "platform";
 
-  /// 平台版本，例如 rn 的 0.75.4，flutter 的 3.24
+  /// Platform version, such as rn 0.75.4, flutter 3.24
   static String eventKeyPlatformVersion = "platform_version";
 
-  /// 平台版本，例如 rn 的 0.75.4，flutter 的 3.24
+  /// The underlying uikit version number that each kit depends on, usually in three segments
   static String eventKeyUIKitVersion = "uikit_version";
 
-  /// 各个场景 kit 的版本号，通常为三段式
+  /// Version number of each kit, usually in three segments
   static String eventKeyKitVersion = "kit_version";
 
-  /// 场景 kit 的名称，通话为 call，直播为 livestreaming，语聊为 liveAudioRoom，聊天为 imkit
+  /// Name of kit, call for call, LIVE for livestreaming, voice chat for liveAudioRoom, chat for imkit
   static String eventKeyKitName = "kit_name";
+
+  static String eventKeyAppState = "app_state";
+  static String eventKeyAppStateActive = "active";
+  static String eventKeyAppStateBackground = "background";
+  static String eventKeyAppStateRestarted = "restarted";
+
+  static String currentAppState() {
+    final appStateMap = <AppLifecycleState, String>{
+      AppLifecycleState.resumed: eventKeyAppStateActive,
+      AppLifecycleState.inactive: eventKeyAppStateBackground,
+      AppLifecycleState.hidden: eventKeyAppStateBackground,
+      AppLifecycleState.paused: eventKeyAppStateBackground,
+      AppLifecycleState.detached: eventKeyAppStateBackground,
+    };
+
+    return appStateMap[WidgetsBinding.instance.lifecycleState] ??
+        eventKeyAppStateBackground;
+  }
 
   bool hadCreated = false;
 

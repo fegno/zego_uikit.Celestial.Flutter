@@ -8,6 +8,7 @@ import 'package:zego_plugin_adapter/zego_plugin_adapter.dart';
 // Project imports:
 import 'package:zego_uikit/src/plugins/signaling/impl/core/core.dart';
 import 'package:zego_uikit/src/plugins/signaling/impl/core/defines.dart';
+import 'package:zego_uikit/src/plugins/signaling/impl/service/reporter.dart';
 import 'package:zego_uikit/src/services/services.dart';
 
 /// @nodoc
@@ -513,6 +514,16 @@ mixin ZegoSignalingPluginCoreInvitationData {
       'create_timestamp_second': event.createTime ~/ 1000,
       'timeout_second': event.timeoutSecond,
     });
+
+    ZegoUIKit().reporter().report(
+      event: ZegoUIKitSignalingReporter.eventCallInviteReceived,
+      params: {
+        ZegoUIKitSignalingReporter.eventKeyInvitationID: event.invitationID,
+        ZegoUIKitSignalingReporter.eventKeyInviter: event.inviterID,
+        ZegoUIKitSignalingReporter.eventKeyExtendedData: event.extendedData,
+        ZegoUIKitReporter.eventKeyAppState: ZegoUIKitReporter.currentAppState(),
+      },
+    );
   }
 
   void onIncomingInvitationCancelled(
