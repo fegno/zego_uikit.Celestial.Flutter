@@ -17,7 +17,8 @@ class ZegoUIKitCoreData
 
   StreamController<ZegoInRoomCommandReceivedData>?
       customCommandReceivedStreamCtrl;
-  StreamController<ZegoNetworkMode>? networkModeStreamCtrl;
+  ZegoUIKitNetworkState networkState = ZegoUIKitNetworkState.unknown;
+  StreamController<ZegoUIKitNetworkState>? networkStateStreamCtrl;
 
   ZegoEffectsBeautyParam beautyParam = ZegoEffectsBeautyParam.defaultParam();
 
@@ -36,7 +37,8 @@ class ZegoUIKitCoreData
 
     customCommandReceivedStreamCtrl ??=
         StreamController<ZegoInRoomCommandReceivedData>.broadcast();
-    networkModeStreamCtrl ??= StreamController<ZegoNetworkMode>.broadcast();
+    networkStateStreamCtrl ??=
+        StreamController<ZegoUIKitNetworkState>.broadcast();
 
     room.init();
     initUser();
@@ -62,8 +64,8 @@ class ZegoUIKitCoreData
     customCommandReceivedStreamCtrl?.close();
     customCommandReceivedStreamCtrl = null;
 
-    networkModeStreamCtrl?.close();
-    networkModeStreamCtrl = null;
+    networkStateStreamCtrl?.close();
+    networkStateStreamCtrl = null;
 
     room.uninit();
     uninitUser();
