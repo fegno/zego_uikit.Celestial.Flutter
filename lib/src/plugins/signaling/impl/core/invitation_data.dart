@@ -503,6 +503,16 @@ mixin ZegoSignalingPluginCoreInvitationData {
 
     addInvitationData(invitationData);
 
+    ZegoUIKit().reporter().report(
+      event: ZegoUIKitSignalingReporter.eventCallInviteReceived,
+      params: {
+        ZegoUIKitSignalingReporter.eventKeyInvitationID: event.invitationID,
+        ZegoUIKitSignalingReporter.eventKeyInviter: event.inviterID,
+        ZegoUIKitSignalingReporter.eventKeyExtendedData: event.extendedData,
+        ZegoUIKitReporter.eventKeyAppState: ZegoUIKitReporter.currentAppState(),
+      },
+    );
+
     streamCtrlInvitationReceived?.add({
       'invitation_id': event.invitationID,
       'data': extendedMap['data'] as String,
@@ -514,16 +524,6 @@ mixin ZegoSignalingPluginCoreInvitationData {
       'create_timestamp_second': event.createTime ~/ 1000,
       'timeout_second': event.timeoutSecond,
     });
-
-    ZegoUIKit().reporter().report(
-      event: ZegoUIKitSignalingReporter.eventCallInviteReceived,
-      params: {
-        ZegoUIKitSignalingReporter.eventKeyInvitationID: event.invitationID,
-        ZegoUIKitSignalingReporter.eventKeyInviter: event.inviterID,
-        ZegoUIKitSignalingReporter.eventKeyExtendedData: event.extendedData,
-        ZegoUIKitReporter.eventKeyAppState: ZegoUIKitReporter.currentAppState(),
-      },
-    );
   }
 
   void onIncomingInvitationCancelled(
