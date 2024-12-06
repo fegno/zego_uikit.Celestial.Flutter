@@ -12,6 +12,7 @@ import 'package:zego_uikit/src/plugins/signaling/defines.dart';
 import 'package:zego_uikit/src/plugins/signaling/impl/core/advance_invitation_protocol.dart';
 import 'package:zego_uikit/src/plugins/signaling/impl/core/core.dart';
 import 'package:zego_uikit/src/plugins/signaling/impl/core/defines.dart';
+import 'package:zego_uikit/src/plugins/signaling/impl/service/reporter.dart';
 import 'package:zego_uikit/src/services/services.dart';
 
 /// @nodoc
@@ -76,14 +77,32 @@ mixin ZegoPluginInvitationServiceAdvance {
       subTag: 'advance invitation service',
     );
 
-    return ZegoSignalingPluginCore.shared.coreData.advanceInvite(
+    return ZegoSignalingPluginCore.shared.coreData
+        .advanceInvite(
       invitees: invitees,
       type: type,
       timeout: timeout,
       extendedData: zimExtendedData,
       kitData: data,
       pushConfig: pluginPushConfig,
-    );
+    )
+        .then((result) {
+      ZegoUIKit().reporter().report(
+        event: ZegoUIKitSignalingReporter.eventCallInvite,
+        params: {
+          ZegoUIKitSignalingReporter.eventKeyInvitationID: result.invitationID,
+          ZegoUIKitSignalingReporter.eventKeyInvitees: invitees,
+          ZegoUIKitSignalingReporter.eventKeyInviteesCount: invitees.length,
+          ZegoUIKitSignalingReporter.eventKeyErrorUsers:
+              result.errorInvitees.keys,
+          ZegoUIKitSignalingReporter.eventKeyErrorUsersCount:
+              result.errorInvitees.keys.length,
+          ZegoUIKitSignalingReporter.eventKeyExtendedData: zimExtendedData,
+        },
+      );
+
+      return result;
+    });
   }
 
   ///
