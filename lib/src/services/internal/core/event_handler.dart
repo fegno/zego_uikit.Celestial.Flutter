@@ -746,13 +746,16 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
 
   @override
   void onNetworkModeChanged(ZegoNetworkMode mode) {
+    coreData.networkState = ZegoUIKitNetworkStateExtension.fromZego(mode);
+
     ZegoLoggerService.logInfo(
-      'onNetworkModeChanged, mode:${mode.name}',
+      'onNetworkModeChanged, '
+      'mode:${mode.name}, '
+      'network state:${coreData.networkState}',
       tag: 'uikit-service-core',
       subTag: 'event',
     );
 
-    coreData.networkState = ZegoUIKitNetworkStateExtension.fromZego(mode);
     coreData.networkStateStreamCtrl?.add(coreData.networkState);
   }
 

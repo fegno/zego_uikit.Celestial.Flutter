@@ -293,7 +293,8 @@ class ZegoUIKitCore
     ZegoLoggerService.logInfo(
       'room id:"$roomID", '
       'has token:${token.isNotEmpty}, '
-      'markAsLargeRoom:$markAsLargeRoom',
+      'markAsLargeRoom:$markAsLargeRoom, '
+      'network state:${ZegoUIKit().getNetworkState()}, ',
       tag: 'uikit-room',
       subTag: 'join room',
     );
@@ -359,7 +360,9 @@ class ZegoUIKitCore
     String? targetRoomID,
   }) async {
     ZegoLoggerService.logInfo(
-      'current room is ${coreData.room.id}, target room id:$targetRoomID',
+      'current room is ${coreData.room.id}, '
+      'target room id:$targetRoomID'
+      'network state:${ZegoUIKit().getNetworkState()}, ',
       tag: 'uikit-room',
       subTag: 'leave room',
     );
