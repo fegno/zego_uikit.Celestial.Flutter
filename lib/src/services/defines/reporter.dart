@@ -4,28 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:zego_uikit/src/channel/platform_interface.dart';
 import 'package:zego_uikit/src/services/uikit_service.dart';
 
-class ZegoUIKitReporterCommonParam {
-  static String callKitName = "call";
-  static String audioRoomKitName = "liveaudioroom";
-  static String liveStreamingKitName = "livestreaming";
-  static String imKitName = "imkit";
-
-  String kitVersion;
-  String kitName;
-
-  ZegoUIKitReporterCommonParam({
-    required this.kitVersion,
-    required this.kitName,
-  });
-
-  Map<String, Object> toMap() {
-    return {
-      ZegoUIKitReporter.eventKeyKitVersion: kitVersion,
-      ZegoUIKitReporter.eventKeyKitName: kitName,
-    };
-  }
-}
-
 class ZegoUIKitReporter {
   static String eventLoginRoom = "loginRoom";
   static String eventLogoutRoom = "logoutRoom";
@@ -54,6 +32,10 @@ class ZegoUIKitReporter {
 
   /// Name of kit, call for call, LIVE for livestreaming, voice chat for liveAudioRoom, chat for imkit
   static String eventKeyKitName = "kit_name";
+  static String callKitName = "call";
+  static String audioRoomKitName = "liveaudioroom";
+  static String liveStreamingKitName = "livestreaming";
+  static String imKitName = "imkit";
 
   static String eventKeyAppState = "app_state";
   static String eventKeyAppStateActive = "active";
