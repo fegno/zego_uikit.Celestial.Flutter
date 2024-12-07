@@ -60,11 +60,8 @@ class ZegoUIKitReporter {
   Future<void> create({
     required int appID,
     required String signOrToken,
-    ZegoUIKitReporterCommonParam? commonParam,
     Map<String, Object> params = const {},
   }) async {
-    params.addAll(commonParam?.toMap() ?? {});
-
     if (hadCreated) {
       ZegoLoggerService.logInfo(
         'had created before',
