@@ -12,3 +12,4 @@ export 'user.dart';
 export 'pip.dart';
 export 'device.dart';
 export 'reporter.dart';
+export 'network.dart';
