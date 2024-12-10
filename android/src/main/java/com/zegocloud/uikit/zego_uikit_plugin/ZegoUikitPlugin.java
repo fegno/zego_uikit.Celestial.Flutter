@@ -74,26 +74,26 @@ public class ZegoUikitPlugin implements FlutterPlugin, MethodCallHandler, Activi
             String signOrToken = call.argument("sign_token");
             Map<String, Object> commonParams = call.argument("params");
 
-            ReporterUtil.create(appID, signOrToken, commonParams);
+            ReportUtil.create(appID, signOrToken, commonParams);
             result.success(null);
         } else if (call.method.equals(Defines.FLUTTER_API_FUNC_REPORTER_DESTROY)) {
-            ReporterUtil.destroy();
+            ReportUtil.destroy();
             result.success(null);
         } else if (call.method.equals(Defines.FLUTTER_API_FUNC_REPORTER_UPDATE_TOKEN)) {
             String token = call.argument("token");
 
-            ReporterUtil.updateToken(token);
+            ReportUtil.updateToken(token);
             result.success(null);
         } else if (call.method.equals(Defines.FLUTTER_API_FUNC_REPORTER_UPDATE_COMMON_PARAMS)) {
             Map<String, Object> commonParams = call.argument("params");
 
-            ReporterUtil.updateCommonParams(commonParams);
+            ReportUtil.updateCommonParams(commonParams);
             result.success(null);
         } else if (call.method.equals(Defines.FLUTTER_API_FUNC_REPORTER_EVENT)) {
             String event = call.argument("event");
             Map<String, Object> paramsMap = call.argument("params");
 
-            ReporterUtil.reportEvent(event, paramsMap);
+            ReportUtil.reportEvent(event, paramsMap);
             result.success(null);
         } else {
             result.notImplemented();
