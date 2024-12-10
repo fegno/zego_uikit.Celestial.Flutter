@@ -8,6 +8,7 @@ import 'package:zego_plugin_adapter/zego_plugin_adapter.dart';
 // Project imports:
 import 'package:zego_uikit/src/plugins/signaling/impl/core/core.dart';
 import 'package:zego_uikit/src/plugins/signaling/impl/core/defines.dart';
+import 'package:zego_uikit/src/plugins/signaling/impl/service/reporter.dart';
 import 'package:zego_uikit/src/services/services.dart';
 
 /// @nodoc
@@ -501,6 +502,16 @@ mixin ZegoSignalingPluginCoreInvitationData {
     }
 
     addInvitationData(invitationData);
+
+    ZegoUIKit().reporter().report(
+      event: ZegoUIKitSignalingReporter.eventCallInviteReceived,
+      params: {
+        ZegoUIKitSignalingReporter.eventKeyInvitationID: event.invitationID,
+        ZegoUIKitSignalingReporter.eventKeyInviter: event.inviterID,
+        ZegoUIKitSignalingReporter.eventKeyExtendedData: event.extendedData,
+        ZegoUIKitReporter.eventKeyAppState: ZegoUIKitReporter.currentAppState(),
+      },
+    );
 
     streamCtrlInvitationReceived?.add({
       'invitation_id': event.invitationID,

@@ -532,4 +532,171 @@ class MethodChannelZegoUIKitPlugin extends ZegoUIKitPluginPlatform {
       );
     }
   }
+
+  @override
+  Future<void> reporterCreate({
+    required int appID,
+    required String signOrToken,
+    Map<String, Object> params = const {},
+  }) async {
+    if (Platform.isIOS) {
+      ZegoLoggerService.logInfo(
+        'not support in iOS',
+        tag: 'uikit-channel',
+        subTag: 'reporterCreate',
+      );
+
+      return;
+    }
+
+    ZegoLoggerService.logInfo(
+      'appID:appID, '
+      'signOrToken:signOrToken, '
+      'userID:userID, '
+      'params:$params, ',
+      tag: 'uikit-channel',
+      subTag: 'reporterCreate',
+    );
+
+    try {
+      await methodChannel.invokeMethod('reporterCreate', {
+        'app_id': appID,
+        'sign_token': signOrToken,
+        'params': params,
+      });
+    } on PlatformException catch (e) {
+      ZegoLoggerService.logError(
+        'Failed to request: $e.',
+        tag: 'uikit-channel',
+        subTag: 'reporterCreate',
+      );
+    }
+  }
+
+  @override
+  Future<void> reporterDestroy() async {
+    if (Platform.isIOS) {
+      ZegoLoggerService.logInfo(
+        'not support in iOS',
+        tag: 'uikit-channel',
+        subTag: 'reporterDestroy',
+      );
+
+      return;
+    }
+
+    ZegoLoggerService.logInfo(
+      '',
+      tag: 'uikit-channel',
+      subTag: 'reporterDestroy',
+    );
+
+    try {
+      await methodChannel.invokeMethod('reporterDestroy', {});
+    } on PlatformException catch (e) {
+      ZegoLoggerService.logError(
+        'Failed to request: $e.',
+        tag: 'uikit-channel',
+        subTag: 'reporterDestroy',
+      );
+    }
+  }
+
+  @override
+  Future<void> reporterUpdateToken(String token) async {
+    if (Platform.isIOS) {
+      ZegoLoggerService.logInfo(
+        'not support in iOS',
+        tag: 'uikit-channel',
+        subTag: 'reporterUpdateToken',
+      );
+
+      return;
+    }
+
+    ZegoLoggerService.logInfo(
+      'token:$token, ',
+      tag: 'uikit-channel',
+      subTag: 'reporterUpdateToken',
+    );
+
+    try {
+      await methodChannel.invokeMethod('reporterUpdateToken', {
+        'token': token,
+      });
+    } on PlatformException catch (e) {
+      ZegoLoggerService.logError(
+        'Failed to request: $e.',
+        tag: 'uikit-channel',
+        subTag: 'reporterUpdateToken',
+      );
+    }
+  }
+
+  @override
+  Future<void> reporterUpdateCommonParams(Map<String, Object> params) async {
+    if (Platform.isIOS) {
+      ZegoLoggerService.logInfo(
+        'not support in iOS',
+        tag: 'uikit-channel',
+        subTag: 'reporterUpdateCommonParams',
+      );
+
+      return;
+    }
+
+    ZegoLoggerService.logInfo(
+      'params:$params, ',
+      tag: 'uikit-channel',
+      subTag: 'reporterUpdateCommonParams',
+    );
+
+    try {
+      await methodChannel.invokeMethod('reporterUpdateCommonParams', {
+        'params': params,
+      });
+    } on PlatformException catch (e) {
+      ZegoLoggerService.logError(
+        'Failed to request: $e.',
+        tag: 'uikit-channel',
+        subTag: 'reporterUpdateCommonParams',
+      );
+    }
+  }
+
+  @override
+  Future<void> reporterEvent({
+    required String event,
+    Map<String, Object> params = const {},
+  }) async {
+    if (Platform.isIOS) {
+      ZegoLoggerService.logInfo(
+        'not support in iOS',
+        tag: 'uikit-channel',
+        subTag: 'reporterEvent',
+      );
+
+      return;
+    }
+
+    ZegoLoggerService.logInfo(
+      'event:$event, '
+      'params:$params, ',
+      tag: 'uikit-channel',
+      subTag: 'reporterEvent',
+    );
+
+    try {
+      await methodChannel.invokeMethod('reporterEvent', {
+        'event': event,
+        'params': params,
+      });
+    } on PlatformException catch (e) {
+      ZegoLoggerService.logError(
+        'Failed to request: $e.',
+        tag: 'uikit-channel',
+        subTag: 'reporterEvent',
+      );
+    }
+  }
 }

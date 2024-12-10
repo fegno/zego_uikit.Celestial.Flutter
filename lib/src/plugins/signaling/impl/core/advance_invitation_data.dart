@@ -9,6 +9,7 @@ import 'package:zego_plugin_adapter/zego_plugin_adapter.dart';
 import 'package:zego_uikit/src/plugins/signaling/impl/core/advance_invitation_protocol.dart';
 import 'package:zego_uikit/src/plugins/signaling/impl/core/core.dart';
 import 'package:zego_uikit/src/plugins/signaling/impl/core/defines.dart';
+import 'package:zego_uikit/src/plugins/signaling/impl/service/reporter.dart';
 import 'package:zego_uikit/src/services/services.dart';
 
 extension AdvanceInvitationStateExtension on AdvanceInvitationState {
@@ -958,6 +959,17 @@ mixin ZegoSignalingPluginCoreAdvanceInvitationData {
       sessionCallUserList
           .removeWhere((user) => user.userID == currentInviter.id);
     }
+
+    ZegoUIKit().reporter().report(
+      event: ZegoUIKitSignalingReporter.eventCallInviteReceived,
+      params: {
+        ZegoUIKitSignalingReporter.eventKeyInvitationID: event.invitationID,
+        ZegoUIKitSignalingReporter.eventKeyInviter: event.inviterID,
+        ZegoUIKitSignalingReporter.eventKeyExtendedData: event.extendedData,
+        ZegoUIKitReporter.eventKeyAppState: ZegoUIKitReporter.currentAppState(),
+      },
+    );
+
     streamCtrlAdvanceInvitationReceived?.add({
       'invitation_id': event.invitationID,
       'data': requestData.customData,

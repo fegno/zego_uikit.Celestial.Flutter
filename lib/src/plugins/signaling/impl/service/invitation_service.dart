@@ -11,6 +11,7 @@ import 'package:zego_plugin_adapter/zego_plugin_adapter.dart';
 import 'package:zego_uikit/src/plugins/signaling/defines.dart';
 import 'package:zego_uikit/src/plugins/signaling/impl/core/core.dart';
 import 'package:zego_uikit/src/plugins/signaling/impl/core/invitation_protocol.dart';
+import 'package:zego_uikit/src/plugins/signaling/impl/service/reporter.dart';
 import 'package:zego_uikit/src/services/services.dart';
 
 /// @nodoc
@@ -78,7 +79,8 @@ mixin ZegoPluginInvitationService {
       subTag: 'invitation service',
     );
 
-    return ZegoSignalingPluginCore.shared.coreData.invite(
+    return ZegoSignalingPluginCore.shared.coreData
+        .invite(
       invitees: invitees,
       type: type,
       timeout: timeout,
@@ -86,7 +88,24 @@ mixin ZegoPluginInvitationService {
       kitData: data,
       isAdvancedMode: isAdvancedMode,
       pushConfig: pluginPushConfig,
-    );
+    )
+        .then((result) {
+      ZegoUIKit().reporter().report(
+        event: ZegoUIKitSignalingReporter.eventCallInvite,
+        params: {
+          ZegoUIKitSignalingReporter.eventKeyInvitationID: result.invitationID,
+          ZegoUIKitSignalingReporter.eventKeyInvitees: invitees,
+          ZegoUIKitSignalingReporter.eventKeyInviteesCount: invitees.length,
+          ZegoUIKitSignalingReporter.eventKeyErrorUsers:
+              result.errorInvitees.keys.toList(),
+          ZegoUIKitSignalingReporter.eventKeyErrorUsersCount:
+              result.errorInvitees.keys.length,
+          ZegoUIKitSignalingReporter.eventKeyExtendedData: zimExtendedData,
+        },
+      );
+
+      return result;
+    });
   }
 
   /// cancel invitation to one or more specified users
@@ -96,19 +115,6 @@ mixin ZegoPluginInvitationService {
     required List<String> invitees,
     required String data,
   }) async {
-    invitees.removeWhere((item) => ['', null].contains(item));
-    if (invitees.isEmpty) {
-      ZegoLoggerService.logError(
-        'invitees is empty',
-        tag: 'uikit-plugin-signaling',
-        subTag: 'invitation service',
-      );
-      return ZegoSignalingPluginCancelInvitationResult(
-        error: PlatformException(code: '', message: ''),
-        errorInvitees: <String>[],
-      );
-    }
-
     var invitationID = '';
     Map<String, dynamic> extendedDataMap = {};
     try {
@@ -125,6 +131,20 @@ mixin ZegoPluginInvitationService {
         invitationID = ZegoSignalingPluginCore.shared.coreData
             .queryInvitationIDByInvitees(invitees);
       }
+    }
+
+    invitees.removeWhere((item) => ['', null].contains(item));
+    if (invitees.isEmpty) {
+      ZegoLoggerService.logError(
+        'invitees is empty',
+        tag: 'uikit-plugin-signaling',
+        subTag: 'invitation service',
+      );
+      return ZegoSignalingPluginCancelInvitationResult(
+        invitationID: invitationID,
+        error: PlatformException(code: '', message: ''),
+        errorInvitees: <String>[],
+      );
     }
 
     final pushConfig = ZegoSignalingPluginIncomingInvitationCancelPushConfig(
@@ -186,7 +206,9 @@ mixin ZegoPluginInvitationService {
         tag: 'uikit-plugin-signaling',
         subTag: 'invitation service',
       );
-      return const ZegoSignalingPluginResponseInvitationResult();
+      return ZegoSignalingPluginResponseInvitationResult(
+        invitationID: invitationID,
+      );
     }
 
     ZegoLoggerService.logInfo(
@@ -213,7 +235,9 @@ mixin ZegoPluginInvitationService {
         tag: 'uikit-plugin-signaling',
         subTag: 'invitation service',
       );
-      return const ZegoSignalingPluginResponseInvitationResult();
+      return ZegoSignalingPluginResponseInvitationResult(
+        invitationID: invitationID,
+      );
     }
 
     ZegoLoggerService.logInfo(
@@ -247,7 +271,9 @@ mixin ZegoPluginInvitationService {
         tag: 'uikit-plugin-signaling',
         subTag: 'invitation service',
       );
-      return const ZegoSignalingPluginResponseInvitationResult();
+      return ZegoSignalingPluginResponseInvitationResult(
+        invitationID: invitationID,
+      );
     }
 
     ZegoLoggerService.logInfo(

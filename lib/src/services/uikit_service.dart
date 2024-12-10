@@ -87,6 +87,7 @@ class ZegoUIKit
   Future<void> init({
     required int appID,
     String appSign = '',
+    String token = '',
     bool? enablePlatformView,
     bool playingStreamInPIPUnderIOS = false,
     ZegoScenario scenario = ZegoScenario.Default,
@@ -94,6 +95,7 @@ class ZegoUIKit
     return ZegoUIKitCore.shared.init(
       appID: appID,
       appSign: appSign,
+      token: token,
       scenario: scenario,
       playingStreamInPIPUnderIOS: playingStreamInPIPUnderIOS,
       enablePlatformView: enablePlatformView,
@@ -130,6 +132,10 @@ class ZegoUIKit
   Stream<ZegoUIKitError> getErrorStream() {
     return ZegoUIKitCore.shared.error.errorStreamCtrl?.stream ??
         const Stream.empty();
+  }
+
+  ZegoUIKitReporter reporter() {
+    return ZegoUIKitCore.shared.reporter;
   }
 
   ValueNotifier<bool> get engineCreatedNotifier =>
