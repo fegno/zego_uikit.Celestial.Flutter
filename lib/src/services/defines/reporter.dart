@@ -53,18 +53,50 @@ class ZegoUIKitReporter {
   }
 
   bool hadCreated = false;
+  int appID = -1;
 
   Future<void> create({
     required int appID,
     required String signOrToken,
     Map<String, Object> params = const {},
   }) async {
+    ZegoLoggerService.logInfo(
+      'appID:$appID, params:$params',
+      tag: 'uikit-reporter',
+      subTag: 'create',
+    );
+
+    assert(appID != -1);
+
     if (hadCreated) {
       ZegoLoggerService.logInfo(
         'had created before',
         tag: 'uikit-reporter',
         subTag: 'create',
       );
+
+      if (this.appID != appID) {
+        ZegoLoggerService.logInfo(
+          'app id is not equal, old:${this.appID}, now:$appID, '
+          're-create...',
+          tag: 'uikit-reporter',
+          subTag: 'create',
+        );
+
+        return destroy().then((_) {
+          ZegoLoggerService.logInfo(
+            're-create, destroyed, create now..',
+            tag: 'uikit-reporter',
+            subTag: 'create',
+          );
+
+          create(
+            appID: appID,
+            signOrToken: signOrToken,
+            params: params,
+          );
+        });
+      }
 
       if (params.isNotEmpty) {
         ZegoLoggerService.logInfo(
@@ -90,6 +122,7 @@ class ZegoUIKitReporter {
       subTag: 'create',
     );
     hadCreated = true;
+    this.appID = appID;
 
     final uikitVersion = await ZegoUIKit().getZegoUIKitVersion();
     params.addAll({
@@ -120,6 +153,7 @@ class ZegoUIKitReporter {
       subTag: 'destroy',
     );
     hadCreated = false;
+    appID = -1;
 
     await ZegoUIKitPluginPlatform.instance.reporterDestroy();
   }
@@ -156,7 +190,7 @@ class ZegoUIKitReporter {
     }
 
     ZegoLoggerService.logInfo(
-      '$userID',
+      'userID:$userID',
       tag: 'uikit-reporter',
       subTag: 'updateUserID',
     );
