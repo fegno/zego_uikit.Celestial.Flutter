@@ -94,7 +94,7 @@ mixin ZegoPluginInvitationServiceAdvance {
           ZegoUIKitSignalingReporter.eventKeyInvitees: invitees,
           ZegoUIKitSignalingReporter.eventKeyInviteesCount: invitees.length,
           ZegoUIKitSignalingReporter.eventKeyErrorUsers:
-              result.errorInvitees.keys,
+              result.errorInvitees.keys.toList(),
           ZegoUIKitSignalingReporter.eventKeyErrorUsersCount:
               result.errorInvitees.keys.length,
           ZegoUIKitSignalingReporter.eventKeyExtendedData: zimExtendedData,
