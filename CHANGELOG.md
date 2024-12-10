@@ -1,7 +1,6 @@
-## 2.28.0
+## 2.27.17
 
-- Features
-  - iOS support PIP
+- Add data analyze
   
 ## 2.27.16
 
