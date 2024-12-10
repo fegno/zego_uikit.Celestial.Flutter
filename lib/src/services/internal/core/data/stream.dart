@@ -1,6 +1,5 @@
 // Dart imports:
 import 'dart:async';
-import 'dart:collection';
 import 'dart:io' show Platform;
 
 // Flutter imports:

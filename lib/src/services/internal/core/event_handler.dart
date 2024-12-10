@@ -3,12 +3,10 @@ import 'dart:async';
 import 'dart:convert';
 
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:zego_express_engine/zego_express_engine.dart';
-import 'package:zego_uikit/src/services/defines/network.dart';
 
 // Project imports:
 import 'package:zego_uikit/src/services/internal/core/data/stream.dart';
