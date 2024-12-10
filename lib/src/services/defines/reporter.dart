@@ -27,9 +27,6 @@ class ZegoUIKitReporter {
   /// The underlying uikit version number that each kit depends on, usually in three segments
   static String eventKeyUIKitVersion = "uikit_version";
 
-  /// Version number of each kit, usually in three segments
-  static String eventKeyKitVersion = "kit_version";
-
   /// Name of kit, call for call, LIVE for livestreaming, voice chat for liveAudioRoom, chat for imkit
   static String eventKeyKitName = "kit_name";
   static String callKitName = "call";

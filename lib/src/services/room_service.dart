@@ -40,7 +40,8 @@ mixin ZegoRoomService {
         ZegoUIKitReporter.eventKeyToken: token,
         ZegoUIKitReporter.eventKeyStartTime: joinBeginTime,
         ZegoUIKitReporter.eventKeyErrorCode: joinRoomResult.errorCode,
-        ZegoUIKitReporter.eventKeyErrorMsg: joinRoomResult.extendedData,
+        ZegoUIKitReporter.eventKeyErrorMsg:
+            joinRoomResult.extendedData.toString(),
       },
     );
 
@@ -71,7 +72,8 @@ mixin ZegoRoomService {
       params: {
         ZegoUIKitReporter.eventKeyRoomID: currentRoomID,
         ZegoUIKitReporter.eventKeyErrorCode: leaveRoomResult.errorCode,
-        ZegoUIKitReporter.eventKeyErrorMsg: leaveRoomResult.extendedData,
+        ZegoUIKitReporter.eventKeyErrorMsg:
+            leaveRoomResult.extendedData.toString(),
       },
     );
 
