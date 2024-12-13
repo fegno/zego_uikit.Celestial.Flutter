@@ -8,6 +8,7 @@
 #import <zego_express_engine/ZegoExpressEngineMethodHandler.h>
 #import <zego_express_engine/ZegoPlatformViewFactory.h>
 #import <zego_express_engine/ZegoPlatformView.h>
+#import <ZegoUIKitReport/ZegoUIKitReport.h>
 
 #import "pip/PipManager.h"
 
@@ -29,9 +30,11 @@
         result(@([UIScreen mainScreen].brightness == 0.0));
     } else if ([@"isInPIP" isEqualToString:call.method]) {
         BOOL callResult = [[PipManager sharedInstance] isInPIP];
+        
         result(@(callResult));
     } else if ([@"minimizeApp" isEqualToString:call.method]) {
         [self minimizeApp];
+        
         result(nil);
     } else if ([@"enableHardwareDecoder" isEqualToString:call.method]) {
         NSDictionary *arguments = call.arguments;
@@ -41,6 +44,7 @@
         
         NSLog(@"enableHardwareDecoder, isEnabled: %@", isEnabled ? @"YES" : @"NO");
         [[PipManager sharedInstance] enableHardwareDecoder:isEnabled];
+        
         result(nil);
     } else if ([@"enableCustomVideoRender" isEqualToString:call.method]) {
         NSDictionary *arguments = call.arguments;
@@ -50,6 +54,7 @@
         
         NSLog(@"enableCustomVideoRender, isEnabled: %@", isEnabled ? @"YES" : @"NO");
         [[PipManager sharedInstance] enableCustomVideoRender:isEnabled];
+        
         result(nil);
     } else if ([@"enableAutoPIP" isEqualToString:call.method]) {
         NSDictionary *arguments = call.arguments;
@@ -67,6 +72,7 @@
         [[PipManager sharedInstance] updatePIPAspectSize:cgFloatAspectWidth :cgFloatAspectHeight];
 
         [[PipManager sharedInstance] enableAutoPIP:isEnabled];
+        
         result(nil);
     } else if ([@"enablePIP" isEqualToString:call.method]) {
         NSDictionary *arguments = call.arguments;
@@ -82,17 +88,22 @@
         [[PipManager sharedInstance] updatePIPAspectSize:cgFloatAspectWidth :cgFloatAspectHeight];
         
         [[PipManager sharedInstance] enablePIP:streamID];
+        
         result(nil);
     } else if ([@"updatePIPSource" isEqualToString:call.method]) {
         NSDictionary *arguments = call.arguments;
         NSString *streamID = arguments[@"stream_id"];
         
         NSLog(@"updatePIPSource, streamID: %@", streamID);
+        
         [[PipManager sharedInstance] updatePIPSource:streamID];
+        
         result(nil);
     } else if ([@"stopPIP" isEqualToString:call.method]) {
         NSLog(@"stopPIP");
+        
         BOOL callResult = [[PipManager sharedInstance] stopPIP];
+        
         result(@(callResult));
     } else if ([@"startPlayingStreamInPIP" isEqualToString:call.method]) {
         NSDictionary *arguments = call.arguments;
@@ -102,6 +113,7 @@
         
         NSLog(@"startPlayingStreamInPIP, viewID: %@, streamID: %@", viewID, streamID);
         [self startPlayingStreamInPIP:viewID streamID:streamID];
+        
         result(nil);
     } else if ([@"stopPlayingStreamInPIP" isEqualToString:call.method]) {
         NSDictionary *arguments = call.arguments;
@@ -109,11 +121,48 @@
         
         NSLog(@"stopPlayingStreamInPIP, streamID: %@", streamID);
         [self stopPlayingStreamInPIP:streamID];
+        
+        result(nil);
+    } else if ([@"reporterCreate" isEqualToString:call.method]) {
+        NSDictionary *arguments = call.arguments;
+        
+        NSNumber *appID = arguments[@"app_id"];
+        unsigned int appIDIntValue = [appID unsignedIntValue];
+
+        NSString *signOrToken = arguments[@"sign_token"];
+        NSDictionary *commonParams = arguments[@"params"];
+
+        [[ReportUtil sharedInstance] createWithAppID:appIDIntValue signOrToken:signOrToken commonParams:commonParams];
+
+        result(nil);
+    } else if ([@"reporterDestroy" isEqualToString:call.method]) {
+        [[ReportUtil sharedInstance] destroy];
+
+        result(nil);
+    } else if ([@"reporterUpdateToken" isEqualToString:call.method]) {
+        NSDictionary *arguments = call.arguments;
+        NSString *token = arguments[@"token"];
+
+        [[ReportUtil sharedInstance] updateToken:token];
+        result(nil);
+    } else if ([@"reporterUpdateCommonParams" isEqualToString:call.method]) {
+        NSDictionary *arguments = call.arguments;
+        NSDictionary *commonParams = arguments[@"params"];
+        
+        [[ReportUtil sharedInstance] updateCommonParams:commonParams];
+        
+        result(nil);
+    } else if ([@"reporterEvent" isEqualToString:call.method]) {
+        NSDictionary *arguments = call.arguments;
+        NSString *event = arguments[@"event"];
+        NSDictionary *paramsMap = arguments[@"params"];
+
+        [[ReportUtil sharedInstance] reportEvent:event paramsDict:paramsMap];
+        
         result(nil);
     } else {
         result(FlutterMethodNotImplemented);
     }
-    
 }
 
 - (void)minimizeApp {

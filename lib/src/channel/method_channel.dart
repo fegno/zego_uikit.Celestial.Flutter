@@ -539,20 +539,9 @@ class MethodChannelZegoUIKitPlugin extends ZegoUIKitPluginPlatform {
     required String signOrToken,
     Map<String, Object> params = const {},
   }) async {
-    if (Platform.isIOS) {
-      ZegoLoggerService.logInfo(
-        'not support in iOS',
-        tag: 'uikit-channel',
-        subTag: 'reporterCreate',
-      );
-
-      return;
-    }
-
     ZegoLoggerService.logInfo(
-      'appID:appID, '
-      'signOrToken:signOrToken, '
-      'userID:userID, '
+      'appID:$appID, '
+      'signOrToken:$signOrToken, '
       'params:$params, ',
       tag: 'uikit-channel',
       subTag: 'reporterCreate',
@@ -575,16 +564,6 @@ class MethodChannelZegoUIKitPlugin extends ZegoUIKitPluginPlatform {
 
   @override
   Future<void> reporterDestroy() async {
-    if (Platform.isIOS) {
-      ZegoLoggerService.logInfo(
-        'not support in iOS',
-        tag: 'uikit-channel',
-        subTag: 'reporterDestroy',
-      );
-
-      return;
-    }
-
     ZegoLoggerService.logInfo(
       '',
       tag: 'uikit-channel',
@@ -604,16 +583,6 @@ class MethodChannelZegoUIKitPlugin extends ZegoUIKitPluginPlatform {
 
   @override
   Future<void> reporterUpdateToken(String token) async {
-    if (Platform.isIOS) {
-      ZegoLoggerService.logInfo(
-        'not support in iOS',
-        tag: 'uikit-channel',
-        subTag: 'reporterUpdateToken',
-      );
-
-      return;
-    }
-
     ZegoLoggerService.logInfo(
       'token:$token, ',
       tag: 'uikit-channel',
@@ -635,16 +604,6 @@ class MethodChannelZegoUIKitPlugin extends ZegoUIKitPluginPlatform {
 
   @override
   Future<void> reporterUpdateCommonParams(Map<String, Object> params) async {
-    if (Platform.isIOS) {
-      ZegoLoggerService.logInfo(
-        'not support in iOS',
-        tag: 'uikit-channel',
-        subTag: 'reporterUpdateCommonParams',
-      );
-
-      return;
-    }
-
     ZegoLoggerService.logInfo(
       'params:$params, ',
       tag: 'uikit-channel',
@@ -669,16 +628,6 @@ class MethodChannelZegoUIKitPlugin extends ZegoUIKitPluginPlatform {
     required String event,
     Map<String, Object> params = const {},
   }) async {
-    if (Platform.isIOS) {
-      ZegoLoggerService.logInfo(
-        'not support in iOS',
-        tag: 'uikit-channel',
-        subTag: 'reporterEvent',
-      );
-
-      return;
-    }
-
     ZegoLoggerService.logInfo(
       'event:$event, '
       'params:$params, ',
