@@ -115,6 +115,7 @@ class ZegoUIKitCore
     reporter.create(
       appID: appID,
       signOrToken: appSign.isNotEmpty ? appSign : token,
+      params: {},
     );
 
     coreData.init();

@@ -125,10 +125,17 @@ class ZegoUIKitReporter {
     this.appID = appID;
 
     final uikitVersion = await ZegoUIKit().getZegoUIKitVersion();
-    params.addAll({
-      eventKeyPlatform: 'flutter',
-      eventKeyUIKitVersion: uikitVersion,
-    });
+    if (params.isEmpty) {
+      params = {
+        eventKeyPlatform: 'flutter',
+        eventKeyUIKitVersion: uikitVersion,
+      };
+    } else {
+      params.addAll({
+        eventKeyPlatform: 'flutter',
+        eventKeyUIKitVersion: uikitVersion,
+      });
+    }
     await ZegoUIKitPluginPlatform.instance.reporterCreate(
       appID: appID,
       signOrToken: signOrToken,
