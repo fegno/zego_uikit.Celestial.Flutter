@@ -202,7 +202,7 @@ mixin ZegoPluginInvitationService {
 
     if (invitationID.isEmpty) {
       ZegoLoggerService.logError(
-        'invitationID is empty',
+        'invitationID is empty, inviter id:$inviterID',
         tag: 'uikit-plugin-signaling',
         subTag: 'invitation service',
       );
