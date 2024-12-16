@@ -492,7 +492,10 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
       default:
         // disable or errors
         targetUser.microphone.value = false;
-        targetUser.mainChannel.soundLevel?.add(0);
+    }
+
+    if(! targetUser.microphone.value) {
+      targetUser.mainChannel.soundLevel?.add(0);
     }
 
     if (oldMicrophoneValue != targetUser.microphone.value ||
