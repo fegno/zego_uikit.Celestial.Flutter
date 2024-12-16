@@ -1,3 +1,7 @@
+## 2.28.0-beta.4
+
+- Add data analyze
+
 ## 2.28.0-beta.3
 
 - Bugs
