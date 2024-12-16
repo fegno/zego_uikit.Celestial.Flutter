@@ -11,6 +11,8 @@ import android.util.Log;
 import android.app.KeyguardManager;
 import android.os.PowerManager;
 import android.view.WindowManager;
+import im.zego.uikit.libuikitreport.*;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 
@@ -66,6 +68,32 @@ public class ZegoUikitPlugin implements FlutterPlugin, MethodCallHandler, Activi
         } else if (call.method.equals(Defines.FLUTTER_API_FUNC_REQUEST_DISMISS_KEYGUARD)) {
             requestDismissKeyguard(context, activityBinding.getActivity());
 
+            result.success(null);
+        } else if (call.method.equals(Defines.FLUTTER_API_FUNC_REPORTER_CREATE)) {
+            int appID = call.argument("app_id");
+            String signOrToken = call.argument("sign_token");
+            Map<String, Object> commonParams = call.argument("params");
+
+            ReportUtil.create(appID, signOrToken, commonParams);
+            result.success(null);
+        } else if (call.method.equals(Defines.FLUTTER_API_FUNC_REPORTER_DESTROY)) {
+            ReportUtil.destroy();
+            result.success(null);
+        } else if (call.method.equals(Defines.FLUTTER_API_FUNC_REPORTER_UPDATE_TOKEN)) {
+            String token = call.argument("token");
+
+            ReportUtil.updateToken(token);
+            result.success(null);
+        } else if (call.method.equals(Defines.FLUTTER_API_FUNC_REPORTER_UPDATE_COMMON_PARAMS)) {
+            Map<String, Object> commonParams = call.argument("params");
+
+            ReportUtil.updateCommonParams(commonParams);
+            result.success(null);
+        } else if (call.method.equals(Defines.FLUTTER_API_FUNC_REPORTER_EVENT)) {
+            String event = call.argument("event");
+            Map<String, Object> paramsMap = call.argument("params");
+
+            ReportUtil.reportEvent(event, paramsMap);
             result.success(null);
         } else {
             result.notImplemented();

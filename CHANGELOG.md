@@ -15,6 +15,14 @@
   - Add iOS PIP related basic functions
 - Bugs
   - Fix some issues with render iOS platform view
+
+## 2.27.18
+
+- Add iOS data analyze
+
+## 2.27.17
+
+- Add data analyze
   
 ## 2.27.16
 

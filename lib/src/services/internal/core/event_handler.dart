@@ -751,7 +751,8 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
       subTag: 'event',
     );
 
-    coreData.networkModeStreamCtrl?.add(mode);
+    coreData.networkState = ZegoUIKitNetworkStateExtension.fromZego(mode);
+    coreData.networkStateStreamCtrl?.add(coreData.networkState);
   }
 
   @override

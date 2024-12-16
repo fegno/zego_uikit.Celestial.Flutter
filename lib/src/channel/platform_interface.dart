@@ -99,4 +99,32 @@ abstract class ZegoUIKitPluginPlatform extends PlatformInterface {
     throw UnimplementedError(
         'stopPlayingStreamInPIP has not been implemented.');
   }
+
+  Future<void> reporterCreate({
+    required int appID,
+    required String signOrToken,
+    Map<String, Object> params = const {},
+  }) {
+    throw UnimplementedError('reporterCreate has not been implemented.');
+  }
+
+  Future<void> reporterDestroy() {
+    throw UnimplementedError('reporterDestroy has not been implemented.');
+  }
+
+  Future<void> reporterUpdateToken(String token) {
+    throw UnimplementedError('reporterUpdateToken has not been implemented.');
+  }
+
+  Future<void> reporterUpdateCommonParams(Map<String, Object> params) {
+    throw UnimplementedError(
+        'reporterUpdateCommonParams has not been implemented.');
+  }
+
+  Future<void> reporterEvent({
+    required String event,
+    Map<String, Object> params = const {},
+  }) {
+    throw UnimplementedError('reporterEvent has not been implemented.');
+  }
 }

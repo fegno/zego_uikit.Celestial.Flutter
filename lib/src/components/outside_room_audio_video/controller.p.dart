@@ -132,6 +132,7 @@ class ZegoOutsideRoomAudioVideoViewControllerPrivate {
         .init(
       appID: _appID,
       appSign: _appSign,
+      token: _token,
       scenario: _scenario,
     )
         .then((value) async {
