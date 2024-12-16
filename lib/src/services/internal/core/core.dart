@@ -16,8 +16,8 @@ import 'package:zego_express_engine/zego_express_engine.dart';
 
 // Project imports:
 import 'package:zego_uikit/src/components/outside_room_audio_video/internal.dart';
-import 'package:zego_uikit/src/services/defines/reporter.dart';
 import 'package:zego_uikit/src/services/defines/network.dart';
+import 'package:zego_uikit/src/services/defines/reporter.dart';
 import 'package:zego_uikit/src/services/internal/core/data/media.dart';
 import 'package:zego_uikit/src/services/internal/core/data/message.dart';
 import 'package:zego_uikit/src/services/internal/core/data/network_timestamp.dart';
@@ -803,7 +803,7 @@ class ZegoUIKitCore
     );
   }
 
-  void setAudioOutputToSpeaker(bool useSpeaker) {
+  bool setAudioOutputToSpeaker(bool useSpeaker) {
     if (!isInit) {
       ZegoLoggerService.logError(
         'core had not init',
@@ -817,18 +817,30 @@ class ZegoUIKitCore
         method: 'setAudioOutputToSpeaker',
       ));
 
-      return;
+      return false;
     }
 
-    if (useSpeaker ==
-        (coreData.localUser.audioRoute.value == ZegoUIKitAudioRoute.speaker)) {
-      ZegoLoggerService.logInfo(
-        'already ${useSpeaker ? 'use' : 'not use'}',
-        tag: 'uikit-service-core',
-        subTag: 'set audio output to speaker',
-      );
+    if (useSpeaker) {
+      if (ZegoUIKitAudioRoute.speaker == coreData.localUser.audioRoute.value) {
+        ZegoLoggerService.logInfo(
+          'already ${useSpeaker ? 'use' : 'not use'}',
+          tag: 'uikit-service-core',
+          subTag: 'set audio output to speaker',
+        );
 
-      return;
+        return true;
+      }
+
+      if (ZegoUIKitAudioRoute.headphone ==
+          coreData.localUser.audioRoute.value) {
+        ZegoLoggerService.logWarn(
+          'Currently using headphone, cannot be set as speaker.',
+          tag: 'uikit-service-core',
+          subTag: 'set audio output to speaker',
+        );
+
+        return false;
+      }
     }
 
     ZegoLoggerService.logInfo(
@@ -845,6 +857,8 @@ class ZegoUIKitCore
     } else {
       coreData.localUser.audioRoute.value = coreData.localUser.lastAudioRoute;
     }
+
+    return true;
   }
 
   Future<bool> turnCameraOn(String userID, bool isOn) async {

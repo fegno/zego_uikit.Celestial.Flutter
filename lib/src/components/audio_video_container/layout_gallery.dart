@@ -206,6 +206,7 @@ class _ZegoLayoutGalleryState extends State<ZegoLayoutGallery> {
 
       final currentItemsCount = itemsConfig.layoutItems.length +
           screenSharingLayoutItems.length +
+
           /// The top screen takes up two squares
           (itemsConfig.topScreenSharing != null ? 2 : 0);
       if (currentItemsCount >= widget.maxItemCount - 1) {

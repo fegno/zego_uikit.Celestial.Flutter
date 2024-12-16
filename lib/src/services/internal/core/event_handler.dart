@@ -8,9 +8,9 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:zego_express_engine/zego_express_engine.dart';
-import 'package:zego_uikit/src/services/defines/network.dart';
 
 // Project imports:
+import 'package:zego_uikit/src/services/defines/network.dart';
 import 'package:zego_uikit/src/services/internal/core/data/stream.dart';
 import 'package:zego_uikit/src/services/internal/internal.dart';
 import 'package:zego_uikit/src/services/services.dart';
@@ -494,7 +494,7 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
         targetUser.microphone.value = false;
     }
 
-    if(! targetUser.microphone.value) {
+    if (!targetUser.microphone.value) {
       targetUser.mainChannel.soundLevel?.add(0);
     }
 
