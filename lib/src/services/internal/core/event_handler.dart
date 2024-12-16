@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:zego_express_engine/zego_express_engine.dart';
 
 // Project imports:
+import 'package:zego_uikit/src/services/defines/network.dart';
 import 'package:zego_uikit/src/services/internal/core/data/stream.dart';
 import 'package:zego_uikit/src/services/internal/internal.dart';
 import 'package:zego_uikit/src/services/services.dart';
@@ -491,7 +492,10 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
       default:
         // disable or errors
         targetUser.microphone.value = false;
-        targetUser.mainChannel.soundLevel?.add(0);
+    }
+
+    if (!targetUser.microphone.value) {
+      targetUser.mainChannel.soundLevel?.add(0);
     }
 
     if (oldMicrophoneValue != targetUser.microphone.value ||
@@ -745,8 +749,12 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
 
   @override
   void onNetworkModeChanged(ZegoNetworkMode mode) {
+    coreData.networkState = ZegoUIKitNetworkStateExtension.fromZego(mode);
+
     ZegoLoggerService.logInfo(
-      'onNetworkModeChanged, mode:${mode.name}',
+      'onNetworkModeChanged, '
+      'mode:${mode.name}, '
+      'network state:${coreData.networkState}',
       tag: 'uikit-service-core',
       subTag: 'event',
     );
