@@ -65,7 +65,7 @@ class ZegoUIKitCore
       final mobileInfo = 'platform:${Platform.operatingSystem}, '
           'version:${Platform.operatingSystemVersion}';
 
-      const zegoUIKitVersion = 'zego_uikit: 2.27.17; ';
+      const zegoUIKitVersion = 'zego_uikit: 2.27.18; ';
       version ??=
           '${zegoUIKitVersion}zego_express:$expressVersion,mobile:$mobileInfo';
     }

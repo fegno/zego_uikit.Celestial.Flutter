@@ -1,3 +1,7 @@
+## 2.27.18
+
+- Add iOS data analyze
+
 ## 2.27.17
 
 - Add data analyze
