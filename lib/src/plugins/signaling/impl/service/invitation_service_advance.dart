@@ -17,6 +17,8 @@ import 'package:zego_uikit/src/services/services.dart';
 
 /// @nodoc
 mixin ZegoPluginInvitationServiceAdvance {
+  DateTime? advanceSendInvitationStartTime;
+
   /// send invitation to one or more specified users
   /// [invitees] list of invitees.
   /// [timeout] timeout of the call invitation, the unit is seconds
@@ -36,12 +38,38 @@ mixin ZegoPluginInvitationServiceAdvance {
       ZegoLoggerService.logError(
         'invitees is empty',
         tag: 'uikit-plugin-signaling',
-        subTag: 'advance invitation service',
+        subTag: 'advance invitation service, send invitation',
       );
-      return const ZegoSignalingPluginSendInvitationResult(
+      return ZegoSignalingPluginSendInvitationResult(
+        error: PlatformException(code: '-1', message: 'invitees is empty'),
         invitationID: '',
         errorInvitees: {},
       );
+    }
+
+    if (null != advanceSendInvitationStartTime) {
+      const maxMilliSeconds = 1000;
+      final diffMilliSeconds = DateTime.now()
+          .difference(advanceSendInvitationStartTime!)
+          .inMilliseconds;
+      if (diffMilliSeconds < maxMilliSeconds) {
+        ZegoLoggerService.logInfo(
+          'limited frequency, '
+          'last access time was $advanceSendInvitationStartTime, '
+          'please request again after ${maxMilliSeconds - diffMilliSeconds} milliseconds',
+          tag: 'uikit-plugin-signaling',
+          subTag: 'advance invitation service, send invitation',
+        );
+
+        return ZegoSignalingPluginSendInvitationResult(
+          error: PlatformException(code: '-1', message: 'limited frequency'),
+          invitationID: '',
+          errorInvitees: invitees.fold<Map<String, int>>({}, (acc, invitee) {
+            acc[invitee] = -1;
+            return acc;
+          }),
+        );
+      }
     }
 
     final zimExtendedData = jsonEncode(ZegoUIKitAdvanceInvitationSendProtocol(
@@ -68,14 +96,16 @@ mixin ZegoPluginInvitationServiceAdvance {
       );
     }
 
+    advanceSendInvitationStartTime = DateTime.now();
+
     ZegoLoggerService.logInfo(
-      'send invitation, '
+      'time:$advanceSendInvitationStartTime, '
       'network state:${ZegoUIKit().getNetworkState()}, '
       'invitees:$invitees, timeout:$timeout, type:$type, '
       'zimExtendedData:$zimExtendedData, '
       'notification config:$zegoNotificationConfig',
       tag: 'uikit-plugin-signaling',
-      subTag: 'advance invitation service',
+      subTag: 'advance invitation service, send invitation',
     );
 
     return ZegoSignalingPluginCore.shared.coreData
