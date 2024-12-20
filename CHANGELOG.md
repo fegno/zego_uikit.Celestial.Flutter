@@ -1,3 +1,7 @@
+## 2.27.19
+
+- Update dependency
+
 ## 2.27.18
 
 - Add iOS data analyze
