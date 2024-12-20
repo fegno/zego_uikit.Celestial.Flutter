@@ -160,6 +160,13 @@ class ZegoUIKitCore
         subTag: 'init',
       );
 
+      ZegoUIKitCore.shared.error.errorStreamCtrl?.add(
+        ZegoUIKitError(
+          code: -1,
+          message: e.toString(),
+          method: 'createEngineWithProfile',
+        ),
+      );
       expressEngineCreatedNotifier.value = false;
     }
 
