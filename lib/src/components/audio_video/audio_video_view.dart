@@ -69,7 +69,8 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
   Widget build(BuildContext context) {
     return circleBorder(
       child: ValueListenableBuilder<bool>(
-        valueListenable: ZegoUIKit().getCameraStateNotifier(widget.user!.id),
+        valueListenable:
+            ZegoUIKit().getCameraStateNotifier(widget.user?.id ?? ''),
         builder: (context, isCameraOn, _) {
           ZegoLoggerService.logInfo(
             '${widget.user?.id}\'s camera changed $isCameraOn,',
@@ -138,7 +139,9 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
                     return SizedBox(
                       width: constraints.maxWidth,
                       height: constraints.maxHeight,
-                      child: audioVideoView,
+                      child: isCameraOn
+                          ? audioVideoView
+                          : Container(color: Colors.transparent),
                     );
                   },
                 );
