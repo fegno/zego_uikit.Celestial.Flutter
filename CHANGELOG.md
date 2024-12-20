@@ -1,3 +1,9 @@
+## 2.28.0-beta.5
+
+- Bugs
+  - Fix the issue of audio video view UI exception in audio mode
+  - Fix crash on android virtual machine
+
 ## 2.28.0-beta.4
 
 - Add data analyze
