@@ -10,6 +10,7 @@ export 'audio_video_container/layout.dart';
 export 'audio_video_container/layout_gallery.dart';
 export 'audio_video_container/layout_picture_in_picture.dart';
 export 'audio_video_container/picture_in_picture/defines.dart';
+export 'effect/beauty_effect_slider.dart';
 export 'defines.dart';
 export 'functions.dart';
 export 'internal/icon_defines.dart';

@@ -1,12 +1,13 @@
-// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:zego_uikit/src/components/screen_util/screen_util.dart';
+import 'package:zego_uikit/src/services/services.dart';
 
 /// @nodoc
 class ZegoSlider extends StatefulWidget {
   final int defaultValue;
+  final void Function(double value)? onChanged;
 
   final double? thumpHeight;
   final double? trackHeight;
@@ -30,12 +31,10 @@ class ZegoSlider extends StatefulWidget {
   /// the radius of the Slider's thumb.
   final double? thumbRadius;
 
-  ///  slider change callback
-  final void Function(int value)? onChanged;
-
   const ZegoSlider({
     Key? key,
     required this.defaultValue,
+    this.onChanged,
     this.thumpHeight,
     this.trackHeight,
     this.labelFormatFunc,
@@ -45,7 +44,6 @@ class ZegoSlider extends StatefulWidget {
     this.inactiveTrackColor,
     this.thumbColor,
     this.thumbRadius,
-    this.onChanged,
   }) : super(key: key);
 
   @override
@@ -103,7 +101,7 @@ class _ZegoSliderState extends State<ZegoSlider> {
               onChanged: (double defaultValue) {
                 valueNotifier.value = defaultValue.toInt();
 
-                widget.onChanged?.call(defaultValue.toInt());
+                widget.onChanged?.call(defaultValue);
               },
             );
           },

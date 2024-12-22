@@ -1,3 +1,7 @@
+## 2.28.0-beta.6
+
+- Update dependency
+
 ## 2.28.0-beta.5
 
 - Bugs
