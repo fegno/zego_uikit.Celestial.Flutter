@@ -16,8 +16,8 @@ import 'package:zego_express_engine/zego_express_engine.dart';
 
 // Project imports:
 import 'package:zego_uikit/src/components/outside_room_audio_video/internal.dart';
-import 'package:zego_uikit/src/services/defines/reporter.dart';
 import 'package:zego_uikit/src/services/defines/network.dart';
+import 'package:zego_uikit/src/services/defines/reporter.dart';
 import 'package:zego_uikit/src/services/internal/core/data/media.dart';
 import 'package:zego_uikit/src/services/internal/core/data/message.dart';
 import 'package:zego_uikit/src/services/internal/core/data/network_timestamp.dart';
@@ -55,6 +55,7 @@ class ZegoUIKitCore
   bool isInit = false;
   bool isNeedDisableWakelock = false;
   bool playingStreamInPIPUnderIOS = false;
+  bool isUsingFrontCameraRequesting = false;
   final expressEngineCreatedNotifier = ValueNotifier<bool>(false);
   List<StreamSubscription<dynamic>?> subscriptions = [];
   String? version;
@@ -115,6 +116,7 @@ class ZegoUIKitCore
     reporter.create(
       appID: appID,
       signOrToken: appSign.isNotEmpty ? appSign : token,
+      params: {},
     );
 
     coreData.init();
@@ -158,6 +160,13 @@ class ZegoUIKitCore
         subTag: 'init',
       );
 
+      ZegoUIKitCore.shared.error.errorStreamCtrl?.add(
+        ZegoUIKitError(
+          code: -1,
+          message: e.toString(),
+          method: 'createEngineWithProfile',
+        ),
+      );
       expressEngineCreatedNotifier.value = false;
     }
 
@@ -309,7 +318,8 @@ class ZegoUIKitCore
     ZegoLoggerService.logInfo(
       'room id:"$roomID", '
       'has token:${token.isNotEmpty}, '
-      'markAsLargeRoom:$markAsLargeRoom',
+      'markAsLargeRoom:$markAsLargeRoom, '
+      'network state:${ZegoUIKit().getNetworkState()}, ',
       tag: 'uikit-room',
       subTag: 'join room',
     );
@@ -375,7 +385,9 @@ class ZegoUIKitCore
     String? targetRoomID,
   }) async {
     ZegoLoggerService.logInfo(
-      'current room is ${coreData.room.id}, target room id:$targetRoomID',
+      'current room is ${coreData.room.id}, '
+      'target room id:$targetRoomID'
+      'network state:${ZegoUIKit().getNetworkState()}, ',
       tag: 'uikit-room',
       subTag: 'leave room',
     );
@@ -711,7 +723,7 @@ class ZegoUIKitCore
     );
   }
 
-  void useFrontFacingCamera(bool isFrontFacing) {
+  Future<bool> useFrontFacingCamera(bool isFrontFacing) async {
     if (isFrontFacing == coreData.localUser.isFrontFacing.value) {
       ZegoLoggerService.logInfo(
         'Already ${isFrontFacing ? 'front' : 'back'}',
@@ -719,7 +731,17 @@ class ZegoUIKitCore
         subTag: 'use front facing camera',
       );
 
-      return;
+      return true;
+    }
+
+    if (isUsingFrontCameraRequesting) {
+      ZegoLoggerService.logInfo(
+        'still requesting, ignore',
+        tag: 'uikit-camera',
+        subTag: 'use front facing camera',
+      );
+
+      return false;
     }
 
     ZegoLoggerService.logInfo(
@@ -728,7 +750,15 @@ class ZegoUIKitCore
       subTag: 'use front facing camera',
     );
 
-    ZegoExpressEngine.instance.useFrontCamera(isFrontFacing);
+    /// Access request frequency limit
+    /// Frequent switching will cause a black screen
+    isUsingFrontCameraRequesting = true;
+
+    coreData.localUser.mainChannel.isCapturedVideoFirstFrame.value = false;
+    coreData.localUser.mainChannel.isCapturedVideoFirstFrame
+        .addListener(onsCapturedVideoFirstFrameAfterSwitchCamera);
+
+    await ZegoExpressEngine.instance.useFrontCamera(isFrontFacing);
     coreData.localUser.isFrontFacing.value = isFrontFacing;
 
     final videoMirrorMode = isFrontFacing
@@ -741,7 +771,22 @@ class ZegoUIKitCore
       tag: 'uikit-camera',
       subTag: 'use front facing camera',
     );
-    ZegoExpressEngine.instance.setVideoMirrorMode(videoMirrorMode);
+    await ZegoExpressEngine.instance.setVideoMirrorMode(videoMirrorMode);
+
+    return true;
+  }
+
+  void onsCapturedVideoFirstFrameAfterSwitchCamera() {
+    coreData.localUser.mainChannel.isCapturedVideoFirstFrame
+        .removeListener(onsCapturedVideoFirstFrameAfterSwitchCamera);
+
+    isUsingFrontCameraRequesting = false;
+
+    ZegoLoggerService.logInfo(
+      'onsCapturedVideoFirstFrameAfterSwitchCamera',
+      tag: 'uikit-camera',
+      subTag: 'use front facing camera',
+    );
   }
 
   void enableVideoMirroring(bool isVideoMirror) {
@@ -799,7 +844,7 @@ class ZegoUIKitCore
     );
   }
 
-  void setAudioOutputToSpeaker(bool useSpeaker) {
+  bool setAudioOutputToSpeaker(bool useSpeaker) {
     if (!isInit) {
       ZegoLoggerService.logError(
         'core had not init',
@@ -813,18 +858,30 @@ class ZegoUIKitCore
         method: 'setAudioOutputToSpeaker',
       ));
 
-      return;
+      return false;
     }
 
-    if (useSpeaker ==
-        (coreData.localUser.audioRoute.value == ZegoUIKitAudioRoute.speaker)) {
-      ZegoLoggerService.logInfo(
-        'already ${useSpeaker ? 'use' : 'not use'}',
-        tag: 'uikit-service-core',
-        subTag: 'set audio output to speaker',
-      );
+    if (useSpeaker) {
+      if (ZegoUIKitAudioRoute.speaker == coreData.localUser.audioRoute.value) {
+        ZegoLoggerService.logInfo(
+          'already ${useSpeaker ? 'use' : 'not use'}',
+          tag: 'uikit-service-core',
+          subTag: 'set audio output to speaker',
+        );
 
-      return;
+        return true;
+      }
+
+      if (ZegoUIKitAudioRoute.headphone ==
+          coreData.localUser.audioRoute.value) {
+        ZegoLoggerService.logWarn(
+          'Currently using headphone, cannot be set as speaker.',
+          tag: 'uikit-service-core',
+          subTag: 'set audio output to speaker',
+        );
+
+        return false;
+      }
     }
 
     ZegoLoggerService.logInfo(
@@ -841,6 +898,8 @@ class ZegoUIKitCore
     } else {
       coreData.localUser.audioRoute.value = coreData.localUser.lastAudioRoute;
     }
+
+    return true;
   }
 
   Future<bool> turnCameraOn(String userID, bool isOn) async {

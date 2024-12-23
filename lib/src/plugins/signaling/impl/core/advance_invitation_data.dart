@@ -1007,10 +1007,10 @@ mixin ZegoSignalingPluginCoreAdvanceInvitationData {
     );
 
     streamCtrlAdvanceInvitationCanceled?.add({
-      'type': invitationData?.type ?? 0,
       'invitation_id': event.invitationID,
-      'inviter': ZegoUIKitUser(id: event.inviterID, name: ''),
       'data': event.extendedData,
+      'type': invitationData?.type ?? 0,
+      'inviter': ZegoUIKitUser(id: event.inviterID, name: ''),
     });
   }
 

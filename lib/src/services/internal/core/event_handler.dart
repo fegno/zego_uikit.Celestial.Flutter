@@ -1,6 +1,7 @@
 // Dart imports:
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show Platform;
 
 // Flutter imports:
 import 'package:flutter/services.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:zego_express_engine/zego_express_engine.dart';
 
 // Project imports:
+import 'package:zego_uikit/src/services/defines/network.dart';
 import 'package:zego_uikit/src/services/internal/core/data/stream.dart';
 import 'package:zego_uikit/src/services/internal/internal.dart';
 import 'package:zego_uikit/src/services/services.dart';
@@ -346,7 +348,9 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
   @override
   void onRemoteCameraStateUpdate(String streamID, ZegoRemoteDeviceState state) {
     ZegoLoggerService.logInfo(
-      'onRemoteCameraStateUpdate, stream id:$streamID, state:$state',
+      'onRemoteCameraStateUpdate, '
+      'stream id:$streamID, '
+      'state:{$state,${state.name}}',
       tag: 'uikit-service-core',
       subTag: 'event',
     );
@@ -407,6 +411,14 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
       case ZegoRemoteDeviceState.Mute:
         targetUser.camera.value = false;
         targetUser.cameraMuteMode.value = true;
+        break;
+      case ZegoRemoteDeviceState.Interruption:
+        if (Platform.isIOS) {
+          /// Frequent switching of the camera will be considered interrupted on the ios side,
+          /// and the camera status will not be modified at this time.
+        } else {
+          targetUser.camera.value = false;
+        }
         break;
       default:
         // disable or errors
@@ -490,7 +502,10 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
       default:
         // disable or errors
         targetUser.microphone.value = false;
-        targetUser.mainChannel.soundLevel?.add(0);
+    }
+
+    if (!targetUser.microphone.value) {
+      targetUser.mainChannel.soundLevel?.add(0);
     }
 
     if (oldMicrophoneValue != targetUser.microphone.value ||
@@ -744,8 +759,12 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
 
   @override
   void onNetworkModeChanged(ZegoNetworkMode mode) {
+    coreData.networkState = ZegoUIKitNetworkStateExtension.fromZego(mode);
+
     ZegoLoggerService.logInfo(
-      'onNetworkModeChanged, mode:${mode.name}',
+      'onNetworkModeChanged, '
+      'mode:${mode.name}, '
+      'network state:${coreData.networkState}',
       tag: 'uikit-service-core',
       subTag: 'event',
     );

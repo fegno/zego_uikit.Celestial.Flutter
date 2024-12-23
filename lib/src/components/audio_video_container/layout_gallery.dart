@@ -204,10 +204,12 @@ class _ZegoLayoutGalleryState extends State<ZegoLayoutGallery> {
         itemsConfig.hasScreenSharing = true;
       }
 
-      if ((itemsConfig.layoutItems.length +
-              screenSharingLayoutItems.length +
-              (itemsConfig.topScreenSharing != null ? 2 : 0)) >
-          widget.maxItemCount) {
+      final currentItemsCount = itemsConfig.layoutItems.length +
+          screenSharingLayoutItems.length +
+
+          /// The top screen takes up two squares
+          (itemsConfig.topScreenSharing != null ? 2 : 0);
+      if (currentItemsCount >= widget.maxItemCount - 1) {
         if (index != layoutUsers.length - 1) {
           lastUsers = List<ZegoUIKitUser>.from(layoutUsers.sublist(index + 1));
         }

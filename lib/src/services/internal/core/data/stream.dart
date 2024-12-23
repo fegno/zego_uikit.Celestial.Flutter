@@ -281,7 +281,8 @@ mixin ZegoUIKitCoreDataStream {
 
     ZegoLoggerService.logInfo(
       'start publish, '
-      '${getLocalStreamChannel(streamType).streamID}',
+      '${getLocalStreamChannel(streamType).streamID}, '
+      'network state:${ZegoUIKit().getNetworkState()}, ',
       tag: 'uikit-stream',
       subTag: 'start publish stream',
     );
@@ -361,7 +362,8 @@ mixin ZegoUIKitCoreDataStream {
   }) async {
     final targetStreamID = getLocalStreamID(streamType);
     ZegoLoggerService.logInfo(
-      'stop $streamType $targetStreamID}',
+      'stop $streamType $targetStreamID}, '
+      'network state:${ZegoUIKit().getNetworkState()}, ',
       tag: 'uikit-stream',
       subTag: 'stop publish stream',
     );
