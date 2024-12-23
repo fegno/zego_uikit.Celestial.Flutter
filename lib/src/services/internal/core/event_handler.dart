@@ -1,9 +1,9 @@
 // Dart imports:
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show Platform;
 
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
@@ -348,7 +348,9 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
   @override
   void onRemoteCameraStateUpdate(String streamID, ZegoRemoteDeviceState state) {
     ZegoLoggerService.logInfo(
-      'onRemoteCameraStateUpdate, stream id:$streamID, state:$state',
+      'onRemoteCameraStateUpdate, '
+      'stream id:$streamID, '
+      'state:{$state,${state.name}}',
       tag: 'uikit-service-core',
       subTag: 'event',
     );
@@ -409,6 +411,14 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
       case ZegoRemoteDeviceState.Mute:
         targetUser.camera.value = false;
         targetUser.cameraMuteMode.value = true;
+        break;
+      case ZegoRemoteDeviceState.Interruption:
+        if (Platform.isIOS) {
+          /// Frequent switching of the camera will be considered interrupted on the ios side,
+          /// and the camera status will not be modified at this time.
+        } else {
+          targetUser.camera.value = false;
+        }
         break;
       default:
         // disable or errors
