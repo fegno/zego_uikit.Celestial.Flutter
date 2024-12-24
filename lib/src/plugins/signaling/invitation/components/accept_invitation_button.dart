@@ -46,7 +46,11 @@ class ZegoAcceptInvitationButton extends StatefulWidget {
   final Color? unclickableBackgroundColor;
 
   ///  You can do what you want after pressed.
-  final void Function(String code, String message)? onPressed;
+  final void Function(
+    String invitationID,
+    String code,
+    String message,
+  )? onPressed;
 
   @override
   State<ZegoAcceptInvitationButton> createState() =>
@@ -88,6 +92,7 @@ class _ZegoAcceptInvitationButtonState
             );
 
     widget.onPressed?.call(
+      result.invitationID,
       result.error?.code ?? '',
       result.error?.message ?? '',
     );
