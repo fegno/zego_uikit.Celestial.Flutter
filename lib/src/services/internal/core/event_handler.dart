@@ -10,7 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:zego_express_engine/zego_express_engine.dart';
 
 // Project imports:
-import 'package:zego_uikit/src/services/defines/network.dart';
 import 'package:zego_uikit/src/services/internal/core/data/stream.dart';
 import 'package:zego_uikit/src/services/internal/internal.dart';
 import 'package:zego_uikit/src/services/services.dart';
@@ -759,18 +758,20 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
 
   @override
   void onNetworkModeChanged(ZegoNetworkMode mode) {
-    coreData.networkState = ZegoUIKitNetworkStateExtension.fromZego(mode);
+    coreData.networkStateNotifier.value =
+        ZegoUIKitNetworkStateExtension.fromZego(mode);
 
     ZegoLoggerService.logInfo(
       'onNetworkModeChanged, '
       'mode:${mode.name}, '
-      'network state:${coreData.networkState}',
+      'network state:${coreData.networkStateNotifier.value}',
       tag: 'uikit-service-core',
       subTag: 'event',
     );
 
-    coreData.networkState = ZegoUIKitNetworkStateExtension.fromZego(mode);
-    coreData.networkStateStreamCtrl?.add(coreData.networkState);
+    coreData.networkStateNotifier.value =
+        ZegoUIKitNetworkStateExtension.fromZego(mode);
+    coreData.networkStateStreamCtrl?.add(coreData.networkStateNotifier.value);
   }
 
   @override

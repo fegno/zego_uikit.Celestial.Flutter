@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:zego_uikit/src/components/screen_util/screen_util.dart';
 import 'package:zego_uikit/src/components/widgets/slider.dart';
 import 'package:zego_uikit/src/services/services.dart';
 

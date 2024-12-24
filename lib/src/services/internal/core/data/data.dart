@@ -17,7 +17,8 @@ class ZegoUIKitCoreData
 
   StreamController<ZegoInRoomCommandReceivedData>?
       customCommandReceivedStreamCtrl;
-  ZegoUIKitNetworkState networkState = ZegoUIKitNetworkState.unknown;
+  final networkStateNotifier =
+      ValueNotifier<ZegoUIKitNetworkState>(ZegoUIKitNetworkState.online);
   StreamController<ZegoUIKitNetworkState>? networkStateStreamCtrl;
 
   ZegoEffectsBeautyParam beautyParam = ZegoEffectsBeautyParam.defaultParam();

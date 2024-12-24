@@ -131,8 +131,12 @@ mixin ZegoRoomService {
         const Stream.empty();
   }
 
+  ValueNotifier<ZegoUIKitNetworkState> getNetworkStateNotifier() {
+    return ZegoUIKitCore.shared.coreData.networkStateNotifier;
+  }
+
   ZegoUIKitNetworkState getNetworkState() {
-    return ZegoUIKitCore.shared.coreData.networkState;
+    return ZegoUIKitCore.shared.coreData.networkStateNotifier.value;
   }
 
   /// get network state notifier
