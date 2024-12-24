@@ -48,6 +48,7 @@ class ZegoStartInvitationButton extends StatefulWidget {
     this.padding,
     this.onWillPressed,
     this.onPressed,
+    this.networkLoadingConfig,
     this.clickableTextColor = Colors.black,
     this.unclickableTextColor = Colors.black,
     this.clickableBackgroundColor = Colors.transparent,
@@ -85,6 +86,8 @@ class ZegoStartInvitationButton extends StatefulWidget {
   final Color? clickableBackgroundColor;
   final Color? unclickableBackgroundColor;
 
+  final ZegoNetworkLoadingConfig? networkLoadingConfig;
+
   @override
   State<ZegoStartInvitationButton> createState() =>
       _ZegoStartInvitationButtonState();
@@ -110,6 +113,7 @@ class _ZegoStartInvitationButtonState extends State<ZegoStartInvitationButton> {
       unclickableTextColor: widget.unclickableTextColor,
       clickableBackgroundColor: widget.clickableBackgroundColor,
       unclickableBackgroundColor: widget.unclickableBackgroundColor,
+      networkLoadingConfig: widget.networkLoadingConfig,
     );
   }
 

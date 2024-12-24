@@ -39,6 +39,7 @@ class ZegoRefuseInvitationButton extends StatefulWidget {
     this.iconTextSpacing,
     this.verticalLayout = true,
     this.onPressed,
+    this.networkLoadingConfig,
     this.clickableTextColor = Colors.black,
     this.unclickableTextColor = Colors.black,
     this.clickableBackgroundColor = Colors.transparent,
@@ -67,6 +68,8 @@ class ZegoRefuseInvitationButton extends StatefulWidget {
   ///  You can do what you want after pressed.
   final void Function(ZegoRefuseInvitationButtonResult result)? onPressed;
 
+  final ZegoNetworkLoadingConfig? networkLoadingConfig;
+
   @override
   State<ZegoRefuseInvitationButton> createState() =>
       _ZegoRefuseInvitationButtonState();
@@ -90,6 +93,7 @@ class _ZegoRefuseInvitationButtonState
       unclickableTextColor: widget.unclickableTextColor,
       clickableBackgroundColor: widget.clickableBackgroundColor,
       unclickableBackgroundColor: widget.unclickableBackgroundColor,
+      networkLoadingConfig: widget.networkLoadingConfig,
     );
   }
 

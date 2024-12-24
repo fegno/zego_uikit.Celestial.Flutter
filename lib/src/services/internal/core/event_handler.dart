@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io' show Platform;
 
 // Flutter imports:
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
@@ -23,6 +24,46 @@ mixin ZegoUIKitCoreEventHandler {
 
 /// @nodoc
 class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
+  final Connectivity _connectivity = Connectivity();
+
+  Future<void> initConnectivity() async {
+    ZegoLoggerService.logInfo(
+      'initConnectivity, ',
+      tag: 'uikit-service-core',
+      subTag: 'event',
+    );
+
+    late List<ConnectivityResult> result;
+    try {
+      result = await _connectivity.checkConnectivity();
+    } on PlatformException catch (e) {
+      return;
+    }
+
+    _onConnectivityChanged(result);
+
+    _connectivity.onConnectivityChanged.listen(_onConnectivityChanged);
+  }
+
+  Future<void> _onConnectivityChanged(List<ConnectivityResult> result) async {
+    ZegoLoggerService.logInfo(
+      'onConnectivityChanged, '
+      'result:$result, '
+      'network state:${coreData.networkStateNotifier.value}',
+      tag: 'uikit-service-core',
+      subTag: 'event',
+    );
+
+    coreData.networkStateNotifier.value =
+        (result.contains(ConnectivityResult.mobile) ||
+                result.contains(ConnectivityResult.wifi) ||
+                result.contains(ConnectivityResult.ethernet))
+            ? ZegoUIKitNetworkState.online
+            : ZegoUIKitNetworkState.offline;
+
+    coreData.networkStateStreamCtrl?.add(coreData.networkStateNotifier.value);
+  }
+
   ZegoUIKitCoreData get coreData => ZegoUIKitCore.shared.coreData;
 
   ZegoUIKitCoreDataErrorImpl get error => ZegoUIKitCore.shared.error;
@@ -754,24 +795,6 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
         }
       }
     }
-  }
-
-  @override
-  void onNetworkModeChanged(ZegoNetworkMode mode) {
-    coreData.networkStateNotifier.value =
-        ZegoUIKitNetworkStateExtension.fromZego(mode);
-
-    ZegoLoggerService.logInfo(
-      'onNetworkModeChanged, '
-      'mode:${mode.name}, '
-      'network state:${coreData.networkStateNotifier.value}',
-      tag: 'uikit-service-core',
-      subTag: 'event',
-    );
-
-    coreData.networkStateNotifier.value =
-        ZegoUIKitNetworkStateExtension.fromZego(mode);
-    coreData.networkStateStreamCtrl?.add(coreData.networkStateNotifier.value);
   }
 
   @override

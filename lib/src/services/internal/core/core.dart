@@ -44,7 +44,9 @@ class ZegoUIKitCore
         ZegoUIKitCoreMessage,
         ZegoUIKitCoreEventHandler,
         ZegoUIKitCoreDataError {
-  ZegoUIKitCore._internal();
+  ZegoUIKitCore._internal() {
+    eventHandler.initConnectivity();
+  }
 
   static final ZegoUIKitCore shared = ZegoUIKitCore._internal();
 
