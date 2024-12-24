@@ -11,7 +11,8 @@ class ZegoNetworkLoading extends StatefulWidget {
     required this.child,
     this.enabled = true,
     this.icon,
-    this.color,
+    this.iconColor,
+    this.progressColor,
   }) : super(key: key);
 
   final Widget child;
@@ -19,7 +20,8 @@ class ZegoNetworkLoading extends StatefulWidget {
 
   /// icon when network had error
   final Widget? icon;
-  final Color? color;
+  final Color? iconColor;
+  final Color? progressColor;
 
   @override
   State<ZegoNetworkLoading> createState() => _ZegoNetworkLoadingState();
@@ -47,13 +49,13 @@ class _ZegoNetworkLoadingState extends State<ZegoNetworkLoading> {
         ? []
         : [
             CircularProgressIndicator(
-              valueColor:
-                  AlwaysStoppedAnimation<Color>(Colors.black.withOpacity(0.2)),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                  (widget.progressColor ?? Colors.black).withOpacity(0.2)),
             ),
             widget.icon ??
                 Icon(
                   Icons.wifi_off,
-                  color: widget.color ?? Colors.black.withOpacity(0.5),
+                  color: (widget.iconColor ?? Colors.black).withOpacity(0.5),
                 ),
           ];
   }
