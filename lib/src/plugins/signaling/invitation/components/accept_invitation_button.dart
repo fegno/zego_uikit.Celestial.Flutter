@@ -14,6 +14,13 @@ class ZegoAcceptInvitationButtonResult {
     required this.code,
     required this.message,
   });
+
+  @override
+  toString() {
+    return 'code:$code, '
+        'message:$message, '
+        'invitation id:$invitationID, ';
+  }
 }
 
 /// @nodoc

@@ -16,6 +16,14 @@ class ZegoStartInvitationButtonResult {
     required this.message,
     required this.errorInvitees,
   });
+
+  @override
+  toString() {
+    return 'code:$code, '
+        'message:$message, '
+        'invitation id:$invitationID, '
+        'error invitees:$errorInvitees';
+  }
 }
 
 /// @nodoc

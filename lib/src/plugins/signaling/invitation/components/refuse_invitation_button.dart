@@ -8,11 +8,19 @@ class ZegoRefuseInvitationButtonResult {
   final String invitationID;
   final String code;
   final String message;
+
   ZegoRefuseInvitationButtonResult({
     required this.invitationID,
     required this.code,
     required this.message,
   });
+
+  @override
+  toString() {
+    return 'code:$code, '
+        'message:$message, '
+        'invitation id:$invitationID, ';
+  }
 }
 
 /// @nodoc
