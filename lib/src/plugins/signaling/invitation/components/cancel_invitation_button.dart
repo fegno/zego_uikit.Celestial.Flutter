@@ -6,6 +6,20 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:zego_uikit/zego_uikit.dart';
 
+class ZegoCancelInvitationButtonResult {
+  final String invitationID;
+  final String code;
+  final String message;
+  final List<String> errorInvitees;
+
+  ZegoCancelInvitationButtonResult({
+    required this.invitationID,
+    required this.code,
+    required this.message,
+    required this.errorInvitees,
+  });
+}
+
 /// @nodoc
 class ZegoCancelInvitationButton extends StatefulWidget {
   const ZegoCancelInvitationButton({
@@ -48,12 +62,7 @@ class ZegoCancelInvitationButton extends StatefulWidget {
   final Color? unclickableBackgroundColor;
 
   ///  You can do what you want after pressed.
-  final void Function(
-    String invitationID,
-    String code,
-    String message,
-    List<String>,
-  )? onPressed;
+  final void Function(ZegoCancelInvitationButtonResult result)? onPressed;
 
   @override
   State<ZegoCancelInvitationButton> createState() =>
@@ -95,10 +104,12 @@ class _ZegoCancelInvitationButtonState
             );
 
     widget.onPressed?.call(
-      result.invitationID,
-      result.error?.code ?? '',
-      result.error?.message ?? '',
-      result.errorInvitees,
+      ZegoCancelInvitationButtonResult(
+        invitationID: result.invitationID,
+        code: result.error?.code ?? '',
+        message: result.error?.message ?? '',
+        errorInvitees: result.errorInvitees,
+      ),
     );
   }
 }

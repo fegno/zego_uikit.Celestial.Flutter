@@ -4,6 +4,20 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:zego_uikit/zego_uikit.dart';
 
+class ZegoStartInvitationButtonResult {
+  final String invitationID;
+  final String code;
+  final String message;
+  final List<String> errorInvitees;
+
+  ZegoStartInvitationButtonResult({
+    required this.invitationID,
+    required this.code,
+    required this.message,
+    required this.errorInvitees,
+  });
+}
+
 /// @nodoc
 class ZegoStartInvitationButton extends StatefulWidget {
   const ZegoStartInvitationButton({
@@ -56,12 +70,7 @@ class ZegoStartInvitationButton extends StatefulWidget {
   final Future<bool> Function()? onWillPressed;
 
   ///  You can do what you want after pressed.
-  final void Function(
-    String code,
-    String message,
-    String invitationID,
-    List<String> errorUsers,
-  )? onPressed;
+  final void Function(ZegoStartInvitationButtonResult result)? onPressed;
 
   final Color? clickableTextColor;
   final Color? unclickableTextColor;
@@ -131,10 +140,12 @@ class _ZegoStartInvitationButtonState extends State<ZegoStartInvitationButton> {
     return sendResult.then(
       (result) {
         widget.onPressed?.call(
-          result.error?.code ?? '',
-          result.error?.message ?? '',
-          result.invitationID,
-          result.errorInvitees.keys.toList(),
+          ZegoStartInvitationButtonResult(
+            code: result.error?.code ?? '',
+            message: result.error?.message ?? '',
+            invitationID: result.invitationID,
+            errorInvitees: result.errorInvitees.keys.toList(),
+          ),
         );
       },
     );
