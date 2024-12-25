@@ -1,34 +1,17 @@
-## 2.28.0-beta.6
-
-- Update dependency
-
-## 2.28.0-beta.5
-
-- Bugs
-  - Fix the issue of audio video view UI exception in audio mode
-  - Fix crash on android virtual machine
-
-## 2.28.0-beta.4
-
-- Add data analyze
-
-## 2.28.0-beta.3
-
-- Bugs
-  - Fix the issue not publish/play stream where the camera is not turned on on iOS when enable platform view(which used by PIP now)
-
-## 2.28.0-beta.2
-
-- Bugs
-  - Fix the issue of media player moving out of range
-  - ZegoUIKitMediaPlayer's API had changed
-
-## 2.28.0-beta.1
+## 2.28.0
 
 - Features
+  - Add data analyze
   - Add iOS PIP related basic functions
 - Bugs
   - Fix some issues with render iOS platform view
+  - Fix the issue of media player moving out of range
+  - ZegoUIKitMediaPlayer's API had changed
+  - Fix the issue not publish/play stream where the camera is not turned on on iOS when enable platform view(which used by PIP now)
+  - Fix the issue of audio video view UI exception in audio mode
+  - Fix crash on android virtual machine
+- Update dependency
+
 ## 2.27.20
 
 - Fix Bugs
