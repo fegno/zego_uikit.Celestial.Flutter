@@ -1500,9 +1500,15 @@ extension ZegoUIKitCoreMixer on ZegoUIKitCore {
   Future<void> startPlayMixAudioVideo(
     String mixerID,
     List<ZegoUIKitCoreUser> users,
-    Map<String, int> userSoundIDs,
-  ) {
-    return coreData.startPlayMixAudioVideo(mixerID, users, userSoundIDs);
+    Map<String, int> userSoundIDs, {
+    PlayerStateUpdateCallback? onPlayerStateUpdated,
+  }) {
+    return coreData.startPlayMixAudioVideo(
+      mixerID,
+      users,
+      userSoundIDs,
+      onPlayerStateUpdated: onPlayerStateUpdated,
+    );
   }
 
   Future<void> stopPlayMixAudioVideo(String mixerID) {
@@ -1515,9 +1521,15 @@ extension ZegoUIKitCoreAudioVideo on ZegoUIKitCore {
   Future<void> startPlayAnotherRoomAudioVideo(
     String roomID,
     String userID,
-    String userName,
-  ) async {
-    return coreData.startPlayAnotherRoomAudioVideo(roomID, userID, userName);
+    String userName, {
+    PlayerStateUpdateCallback? onPlayerStateUpdated,
+  }) async {
+    return coreData.startPlayAnotherRoomAudioVideo(
+      roomID,
+      userID,
+      userName,
+      onPlayerStateUpdated: onPlayerStateUpdated,
+    );
   }
 
   Future<void> stopPlayAnotherRoomAudioVideo(String userID) async {

@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:zego_uikit/src/services/uikit_service.dart';
 import 'package:zego_uikit/src/services/defines/network.dart';
+import 'package:zego_uikit/src/services/uikit_service.dart';
 
 class ZegoNetworkLoadingConfig {
   bool enabled;

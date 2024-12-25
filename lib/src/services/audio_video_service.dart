@@ -449,4 +449,12 @@ mixin ZegoAudioVideoService {
         }) ??
         const Stream.empty();
   }
+
+  String getGeneratedStreamID(
+    String userID,
+    String roomID,
+    ZegoStreamType type,
+  ) {
+    return generateStreamID(userID, roomID, type);
+  }
 }

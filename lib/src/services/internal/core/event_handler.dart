@@ -4,10 +4,10 @@ import 'dart:convert';
 import 'dart:io' show Platform;
 
 // Flutter imports:
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:zego_express_engine/zego_express_engine.dart';
 
 // Project imports:
@@ -333,6 +333,17 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
       tag: 'uikit-service-core',
       subTag: 'event',
     );
+
+    (coreData.playerStateUpdateCallbackList[streamID] ?? []).map(
+      (cb) => cb.call(
+        ZegoUIKitPlayerStateExtension.fromZego(state),
+        errorCode,
+        extendedData,
+      ),
+    );
+    if (ZegoPlayerState.NoPlay == state) {
+      coreData.playerStateUpdateCallbackList.remove(streamID);
+    }
 
     coreData.streamDic[streamID]?.playerState = state;
 
