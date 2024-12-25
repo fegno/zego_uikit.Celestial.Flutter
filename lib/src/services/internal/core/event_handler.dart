@@ -37,6 +37,12 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
     try {
       result = await _connectivity.checkConnectivity();
     } on PlatformException catch (e) {
+      ZegoLoggerService.logInfo(
+        'initConnectivity exception:$e',
+        tag: 'uikit-service-core',
+        subTag: 'event',
+      );
+
       return;
     }
 
