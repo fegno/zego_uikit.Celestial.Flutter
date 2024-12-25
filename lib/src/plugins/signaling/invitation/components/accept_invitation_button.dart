@@ -4,6 +4,25 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:zego_uikit/zego_uikit.dart';
 
+class ZegoAcceptInvitationButtonResult {
+  final String invitationID;
+  final String code;
+  final String message;
+
+  ZegoAcceptInvitationButtonResult({
+    required this.invitationID,
+    required this.code,
+    required this.message,
+  });
+
+  @override
+  toString() {
+    return 'code:$code, '
+        'message:$message, '
+        'invitation id:$invitationID, ';
+  }
+}
+
 /// @nodoc
 class ZegoAcceptInvitationButton extends StatefulWidget {
   const ZegoAcceptInvitationButton({
@@ -20,6 +39,7 @@ class ZegoAcceptInvitationButton extends StatefulWidget {
     this.iconTextSpacing,
     this.verticalLayout = true,
     this.onPressed,
+    this.networkLoadingConfig,
     this.clickableTextColor = Colors.black,
     this.unclickableTextColor = Colors.black,
     this.clickableBackgroundColor = Colors.transparent,
@@ -46,7 +66,9 @@ class ZegoAcceptInvitationButton extends StatefulWidget {
   final Color? unclickableBackgroundColor;
 
   ///  You can do what you want after pressed.
-  final void Function(String code, String message)? onPressed;
+  final void Function(ZegoAcceptInvitationButtonResult result)? onPressed;
+
+  final ZegoNetworkLoadingConfig? networkLoadingConfig;
 
   @override
   State<ZegoAcceptInvitationButton> createState() =>
@@ -71,6 +93,7 @@ class _ZegoAcceptInvitationButtonState
       unclickableTextColor: widget.unclickableTextColor,
       clickableBackgroundColor: widget.clickableBackgroundColor,
       unclickableBackgroundColor: widget.unclickableBackgroundColor,
+      networkLoadingConfig: widget.networkLoadingConfig,
     );
   }
 
@@ -88,8 +111,11 @@ class _ZegoAcceptInvitationButtonState
             );
 
     widget.onPressed?.call(
-      result.error?.code ?? '',
-      result.error?.message ?? '',
+      ZegoAcceptInvitationButtonResult(
+        invitationID: result.invitationID,
+        code: result.error?.code ?? '',
+        message: result.error?.message ?? '',
+      ),
     );
   }
 }

@@ -87,8 +87,8 @@ mixin ZegoAudioVideoService {
   }
 
   /// local use front facing camera
-  void useFrontFacingCamera(bool isFrontFacing) {
-    ZegoUIKitCore.shared.useFrontFacingCamera(isFrontFacing);
+  Future<bool> useFrontFacingCamera(bool isFrontFacing) async {
+    return ZegoUIKitCore.shared.useFrontFacingCamera(isFrontFacing);
   }
 
   /// set video mirror mode

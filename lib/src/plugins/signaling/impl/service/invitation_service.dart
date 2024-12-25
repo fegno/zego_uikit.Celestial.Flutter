@@ -16,6 +16,8 @@ import 'package:zego_uikit/src/services/services.dart';
 
 /// @nodoc
 mixin ZegoPluginInvitationService {
+  DateTime? sendInvitationStartTime;
+
   /// send invitation to one or more specified users
   /// [invitees] list of invitees.
   /// [timeout] timeout of the call invitation, the unit is seconds
@@ -36,12 +38,37 @@ mixin ZegoPluginInvitationService {
       ZegoLoggerService.logError(
         'invitees is empty',
         tag: 'uikit-plugin-signaling',
-        subTag: 'invitation service',
+        subTag: 'invitation service, send invitation',
       );
-      return const ZegoSignalingPluginSendInvitationResult(
+      return ZegoSignalingPluginSendInvitationResult(
+        error: PlatformException(code: '-1', message: 'invitees is empty'),
         invitationID: '',
-        errorInvitees: {},
+        errorInvitees: const {},
       );
+    }
+
+    if (null != sendInvitationStartTime) {
+      const maxMilliSeconds = 1000;
+      final diffMilliSeconds =
+          DateTime.now().difference(sendInvitationStartTime!).inMilliseconds;
+      if (diffMilliSeconds < maxMilliSeconds) {
+        ZegoLoggerService.logInfo(
+          'limited frequency, '
+          'last access time was $sendInvitationStartTime, '
+          'please request again after ${maxMilliSeconds - diffMilliSeconds} milliseconds',
+          tag: 'uikit-plugin-signaling',
+          subTag: 'invitation service, send invitation',
+        );
+
+        return ZegoSignalingPluginSendInvitationResult(
+          error: PlatformException(code: '-1', message: 'limited frequency'),
+          invitationID: '',
+          errorInvitees: invitees.fold<Map<String, int>>({}, (acc, invitee) {
+            acc[invitee] = -1;
+            return acc;
+          }),
+        );
+      }
     }
 
     final zimExtendedData = const JsonEncoder().convert(
@@ -69,14 +96,16 @@ mixin ZegoPluginInvitationService {
       );
     }
 
+    sendInvitationStartTime = DateTime.now();
+
     ZegoLoggerService.logInfo(
-      'send invitation: '
+      'time:$sendInvitationStartTime, '
       'network state:${ZegoUIKit().getNetworkState()}, '
       'invitees:$invitees, timeout:$timeout, type:$type, '
       'zimExtendedData:$zimExtendedData, '
       'notification config:$zegoNotificationConfig',
       tag: 'uikit-plugin-signaling',
-      subTag: 'invitation service',
+      subTag: 'invitation service, send invitation',
     );
 
     return ZegoSignalingPluginCore.shared.coreData

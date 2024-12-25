@@ -129,7 +129,6 @@ class ZegoUIKitExpressEventImpl {
     ZegoExpressEngine.onCapturedDataRecordProgressUpdate =
         onCapturedDataRecordProgressUpdate;
     ZegoExpressEngine.onPerformanceStatusUpdate = onPerformanceStatusUpdate;
-    ZegoExpressEngine.onNetworkModeChanged = onNetworkModeChanged;
     ZegoExpressEngine.onNetworkSpeedTestError = onNetworkSpeedTestError;
     ZegoExpressEngine.onNetworkSpeedTestQualityUpdate =
         onNetworkSpeedTestQualityUpdate;
@@ -236,7 +235,6 @@ class ZegoUIKitExpressEventImpl {
     ZegoExpressEngine.onCapturedDataRecordStateUpdate = null;
     ZegoExpressEngine.onCapturedDataRecordProgressUpdate = null;
     ZegoExpressEngine.onPerformanceStatusUpdate = null;
-    ZegoExpressEngine.onNetworkModeChanged = null;
     ZegoExpressEngine.onNetworkSpeedTestError = null;
     ZegoExpressEngine.onNetworkSpeedTestQualityUpdate = null;
     ZegoExpressEngine.onNetworkQuality = null;

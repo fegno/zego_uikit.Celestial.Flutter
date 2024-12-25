@@ -44,7 +44,9 @@ class ZegoUIKitCore
         ZegoUIKitCoreMessage,
         ZegoUIKitCoreEventHandler,
         ZegoUIKitCoreDataError {
-  ZegoUIKitCore._internal();
+  ZegoUIKitCore._internal() {
+    eventHandler.initConnectivity();
+  }
 
   static final ZegoUIKitCore shared = ZegoUIKitCore._internal();
 
@@ -55,6 +57,7 @@ class ZegoUIKitCore
   bool isInit = false;
   bool isNeedDisableWakelock = false;
   bool playingStreamInPIPUnderIOS = false;
+  bool isUsingFrontCameraRequesting = false;
   final expressEngineCreatedNotifier = ValueNotifier<bool>(false);
   List<StreamSubscription<dynamic>?> subscriptions = [];
   String? version;
@@ -159,6 +162,13 @@ class ZegoUIKitCore
         subTag: 'init',
       );
 
+      ZegoUIKitCore.shared.error.errorStreamCtrl?.add(
+        ZegoUIKitError(
+          code: -1,
+          message: e.toString(),
+          method: 'createEngineWithProfile',
+        ),
+      );
       expressEngineCreatedNotifier.value = false;
     }
 
@@ -715,7 +725,7 @@ class ZegoUIKitCore
     );
   }
 
-  void useFrontFacingCamera(bool isFrontFacing) {
+  Future<bool> useFrontFacingCamera(bool isFrontFacing) async {
     if (isFrontFacing == coreData.localUser.isFrontFacing.value) {
       ZegoLoggerService.logInfo(
         'Already ${isFrontFacing ? 'front' : 'back'}',
@@ -723,7 +733,17 @@ class ZegoUIKitCore
         subTag: 'use front facing camera',
       );
 
-      return;
+      return true;
+    }
+
+    if (isUsingFrontCameraRequesting) {
+      ZegoLoggerService.logInfo(
+        'still requesting, ignore',
+        tag: 'uikit-camera',
+        subTag: 'use front facing camera',
+      );
+
+      return false;
     }
 
     ZegoLoggerService.logInfo(
@@ -732,7 +752,15 @@ class ZegoUIKitCore
       subTag: 'use front facing camera',
     );
 
-    ZegoExpressEngine.instance.useFrontCamera(isFrontFacing);
+    /// Access request frequency limit
+    /// Frequent switching will cause a black screen
+    isUsingFrontCameraRequesting = true;
+
+    coreData.localUser.mainChannel.isCapturedVideoFirstFrame.value = false;
+    coreData.localUser.mainChannel.isCapturedVideoFirstFrame
+        .addListener(onsCapturedVideoFirstFrameAfterSwitchCamera);
+
+    await ZegoExpressEngine.instance.useFrontCamera(isFrontFacing);
     coreData.localUser.isFrontFacing.value = isFrontFacing;
 
     final videoMirrorMode = isFrontFacing
@@ -745,7 +773,22 @@ class ZegoUIKitCore
       tag: 'uikit-camera',
       subTag: 'use front facing camera',
     );
-    ZegoExpressEngine.instance.setVideoMirrorMode(videoMirrorMode);
+    await ZegoExpressEngine.instance.setVideoMirrorMode(videoMirrorMode);
+
+    return true;
+  }
+
+  void onsCapturedVideoFirstFrameAfterSwitchCamera() {
+    coreData.localUser.mainChannel.isCapturedVideoFirstFrame
+        .removeListener(onsCapturedVideoFirstFrameAfterSwitchCamera);
+
+    isUsingFrontCameraRequesting = false;
+
+    ZegoLoggerService.logInfo(
+      'onsCapturedVideoFirstFrameAfterSwitchCamera',
+      tag: 'uikit-camera',
+      subTag: 'use front facing camera',
+    );
   }
 
   void enableVideoMirroring(bool isVideoMirror) {

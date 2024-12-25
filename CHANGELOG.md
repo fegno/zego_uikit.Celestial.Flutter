@@ -29,6 +29,13 @@
   - Add iOS PIP related basic functions
 - Bugs
   - Fix some issues with render iOS platform view
+## 2.27.20
+
+- Fix Bugs
+
+## 2.27.19
+
+- Update dependency
 
 ## 2.27.18
 
