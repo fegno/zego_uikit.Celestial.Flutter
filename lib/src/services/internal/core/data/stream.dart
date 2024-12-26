@@ -378,6 +378,23 @@ mixin ZegoUIKitCoreDataStream {
             .setPlayerCanvas(canvas);
         break;
       case ZegoStreamType.screenSharing:
+        await ZegoExpressEngine.instance.setVideoSource(
+          ZegoVideoSourceType.ScreenCapture,
+          instanceID:
+              ZegoUIKitCore.shared.coreData.screenCaptureSource!.getIndex(),
+          channel: streamType.channel,
+        );
+        await ZegoExpressEngine.instance.setAudioSource(
+          ZegoAudioSourceType.ScreenCapture,
+          channel: streamType.channel,
+        );
+
+        await ZegoExpressEngine.instance.setVideoConfig(
+          ZegoVideoConfig.preset(ZegoVideoConfigPreset.Preset540P),
+          channel: streamType.channel,
+        );
+
+        break;
       case ZegoStreamType.mix:
         await ZegoExpressEngine.instance.setVideoConfig(
           ZegoVideoConfig.preset(ZegoVideoConfigPreset.Preset540P),
@@ -452,6 +469,10 @@ mixin ZegoUIKitCoreDataStream {
       case ZegoStreamType.screenSharing:
         await ZegoExpressEngine.instance.setVideoSource(
           ZegoVideoSourceType.None,
+          channel: streamType.channel,
+        );
+        await ZegoExpressEngine.instance.setAudioSource(
+          ZegoAudioSourceType.Default,
           channel: streamType.channel,
         );
         break;

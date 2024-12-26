@@ -54,31 +54,26 @@ mixin ZegoUIKitCoreDataScreenSharing {
     screenCaptureSource =
         await ZegoExpressEngine.instance.createScreenCaptureSource();
 
-    await ZegoExpressEngine.instance
-        .setVideoSource(
-      ZegoVideoSourceType.ScreenCapture,
-      instanceID: screenCaptureSource?.getIndex(),
-      channel: ZegoStreamType.screenSharing.channel,
-    )
-        .then((value) {
-      // flutter: onPublisherQualityUpdate 694_88037_screensharing quality:ZegoPublishStreamQualityExtension{videoCaptureFPS:0.0videoEncodeFPS:0.0videoSendFPS:0.0videoKBPS:0.0audioCaptureFPS:0.0audioSendFPS:0.0audioKBPS:0.0rtt:12packetLostRate:0.0level:ZegoStreamQualityLevel.ExcellentisHardwareEncode:truevideoCodecID:ZegoVideoCodecID.DefaulttotalSendBytes:5098682.0audioSendBytes:0.0videoSendByte:5098682.0}
-      isScreenSharingQualityNormal.value = false;
-      isScreenSharing.value = true;
-      ZegoUIKitCore.shared.coreData
-          .startPublishingStream(streamType: ZegoStreamType.screenSharing);
-      final config = ZegoScreenCaptureConfig(
-        true,
-        true,
-        microphoneVolume: 100,
-        applicationVolume: 100,
-      );
-      screenCaptureSource?.startCapture(config: config);
-    });
+    isScreenSharingQualityNormal.value = false;
+    isScreenSharing.value = true;
+    await ZegoUIKitCore.shared.coreData.startPublishingStream(
+      streamType: ZegoStreamType.screenSharing,
+    );
+    final config = ZegoScreenCaptureConfig(
+      true,
+      true,
+      microphoneVolume: 100,
+      applicationVolume: 100,
+    );
+    await screenCaptureSource?.startCapture(
+      config: config,
+      inApp: false,
+    );
 
     if (isFirstScreenSharing && Platform.isAndroid) {
       isFirstScreenSharing = false;
       await stopSharingScreen();
-      startSharingScreen();
+      await startSharingScreen();
     }
 
     ZegoLoggerService.logInfo(
