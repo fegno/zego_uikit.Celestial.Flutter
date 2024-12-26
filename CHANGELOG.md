@@ -1,3 +1,7 @@
+## 2.28.1
+
+- Fix screen-sharing outside the app, remote pull-based streaming has no sound
+
 ## 2.28.0
 
 - Features
