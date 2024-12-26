@@ -335,7 +335,12 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
     Map<String, dynamic> extendedData,
   ) {
     ZegoLoggerService.logInfo(
-      'onPlayerStateUpdate, stream id:$streamID, state:$state, errorCode:$errorCode, extendedData:$extendedData',
+      'onPlayerStateUpdate, '
+      'stream id:$streamID, '
+      'state:$state, '
+      'errorCode:$errorCode, '
+      'extendedData:$extendedData, '
+      'isAllPlayStreamAudioVideoMuted:${coreData.isAllPlayStreamAudioVideoMuted}',
       tag: 'uikit-service-core',
       subTag: 'event',
     );
@@ -371,6 +376,18 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
           method: 'express-api:onPlayerStateUpdate',
         ),
       );
+    }
+
+    if (coreData.isAllPlayStreamAudioVideoMuted) {
+      ZegoLoggerService.logInfo(
+        'audio video is not play enabled, stream id:$streamID need stop play',
+        tag: 'uikit-service-core',
+        subTag: 'event',
+      );
+
+      if (ZegoPlayerState.Playing == state) {
+        coreData.stopPlayingStream(streamID, removeDic: false);
+      }
     }
   }
 

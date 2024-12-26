@@ -711,8 +711,15 @@ mixin ZegoUIKitCoreDataStream {
 
     streamDic.forEach((streamID, streamInfo) async {
       if (isMuted) {
-        // stop playing stream
-        await stopPlayingStream(streamID, removeDic: false);
+        if (ZegoPlayerState.Playing == streamInfo.playerState) {
+          await stopPlayingStream(streamID, removeDic: false);
+        } else {
+          ZegoLoggerService.logInfo(
+            'stream id($streamID) not playing(${streamInfo.playerState}) now, waiting player state update',
+            tag: 'uikit-stream',
+            subTag: 'mute all play stream audio video',
+          );
+        }
       } else {
         if (ZegoUIKitCore.shared.coreData.localUser.id != streamInfo.userID &&
             streamInfo.playerState == ZegoPlayerState.NoPlay) {
