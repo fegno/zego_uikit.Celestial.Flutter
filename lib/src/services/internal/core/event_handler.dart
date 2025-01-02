@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io' show Platform;
 
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
@@ -296,6 +297,42 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
           ),
         )
         .isCapturedVideoFirstFrame
+        .value = true;
+
+    try {
+      /// onPublisherRenderVideoFirstFrame only once callback
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        coreData
+            .getUserStreamChannel(
+              ZegoUIKitCore.shared.coreData.localUser,
+              coreData.getStreamTypeByZegoPublishChannel(
+                ZegoUIKitCore.shared.coreData.localUser,
+                channel,
+              ),
+            )
+            .isRenderedVideoFirstFrame
+            .value = true;
+      });
+    } catch (e) {
+      ZegoLoggerService.logInfo(
+        'set isRenderedVideoFirstFrame error:$e',
+        tag: 'uikit-component',
+        subTag: 'audio video view',
+      );
+    }
+  }
+
+  @override
+  void onPublisherRenderVideoFirstFrame(ZegoPublishChannel channel) {
+    coreData
+        .getUserStreamChannel(
+          ZegoUIKitCore.shared.coreData.localUser,
+          coreData.getStreamTypeByZegoPublishChannel(
+            ZegoUIKitCore.shared.coreData.localUser,
+            channel,
+          ),
+        )
+        .isRenderedVideoFirstFrame
         .value = true;
   }
 

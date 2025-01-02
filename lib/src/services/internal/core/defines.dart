@@ -115,6 +115,7 @@ class ZegoUIKitCoreStreamInfo {
           ZegoPublishStreamQualityExtension.empty().toUIKit());
   ValueNotifier<bool> isCapturedAudioFirstFrame = ValueNotifier<bool>(false);
   ValueNotifier<bool> isCapturedVideoFirstFrame = ValueNotifier<bool>(false);
+  ValueNotifier<bool> isRenderedVideoFirstFrame = ValueNotifier<bool>(false);
   ValueNotifier<bool> isSendAudioFirstFrame = ValueNotifier<bool>(false);
   ValueNotifier<bool> isSendVideoFirstFrame = ValueNotifier<bool>(false);
   ValueNotifier<GlobalKey> globalKey = ValueNotifier<GlobalKey>(GlobalKey());
@@ -135,6 +136,7 @@ class ZegoUIKitCoreStreamInfo {
     quality.value = ZegoPublishStreamQualityExtension.empty().toUIKit();
     isCapturedAudioFirstFrame.value = false;
     isCapturedVideoFirstFrame.value = false;
+    isRenderedVideoFirstFrame.value = false;
     isSendAudioFirstFrame.value = false;
     isSendVideoFirstFrame.value = false;
   }

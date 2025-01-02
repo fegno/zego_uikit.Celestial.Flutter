@@ -756,10 +756,11 @@ class ZegoUIKitCore
 
     coreData.localUser.mainChannel.isCapturedVideoFirstFrame.value = false;
     coreData.localUser.mainChannel.isCapturedVideoFirstFrame
-        .addListener(onsCapturedVideoFirstFrameAfterSwitchCamera);
+        .addListener(onCapturedVideoFirstFrameAfterSwitchCamera);
+    coreData.localUser.mainChannel.isRenderedVideoFirstFrame.value = false;
 
-    await ZegoExpressEngine.instance.useFrontCamera(isFrontFacing);
     coreData.localUser.isFrontFacing.value = isFrontFacing;
+    await ZegoExpressEngine.instance.useFrontCamera(isFrontFacing);
 
     final videoMirrorMode = isFrontFacing
         ? (coreData.localUser.isVideoMirror.value
@@ -776,14 +777,14 @@ class ZegoUIKitCore
     return true;
   }
 
-  void onsCapturedVideoFirstFrameAfterSwitchCamera() {
+  void onCapturedVideoFirstFrameAfterSwitchCamera() {
     coreData.localUser.mainChannel.isCapturedVideoFirstFrame
-        .removeListener(onsCapturedVideoFirstFrameAfterSwitchCamera);
+        .removeListener(onCapturedVideoFirstFrameAfterSwitchCamera);
 
     isUsingFrontCameraRequesting = false;
 
     ZegoLoggerService.logInfo(
-      'onsCapturedVideoFirstFrameAfterSwitchCamera',
+      'onCapturedVideoFirstFrameAfterSwitchCamera',
       tag: 'uikit-camera',
       subTag: 'use front facing camera',
     );

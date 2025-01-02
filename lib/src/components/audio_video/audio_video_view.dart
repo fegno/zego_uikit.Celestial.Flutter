@@ -14,6 +14,8 @@ import 'package:zego_uikit/src/components/audio_video/defines.dart';
 import 'package:zego_uikit/src/components/defines.dart';
 import 'package:zego_uikit/src/components/internal/internal.dart';
 import 'package:zego_uikit/src/components/screen_util/screen_util.dart';
+import 'package:zego_uikit/src/components/widgets/flip_animation.dart';
+import 'package:zego_uikit/src/services/internal/core/core.dart';
 import 'package:zego_uikit/src/services/services.dart';
 
 /// display user audio and video information,
@@ -54,9 +56,13 @@ class ZegoAudioVideoView extends StatefulWidget {
 
 class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
   Timer? viewIDGuardTimer;
+  final isLocalUserFlippedNotifier = ValueNotifier<bool>(false);
 
   int get userViewID => ZegoUIKit().getAudioVideoViewID(widget.user!.id);
   bool get userViewIDIsEmpty => -1 == userViewID;
+
+  ZegoUIKitCoreUser get localUserData =>
+      ZegoUIKitCore.shared.coreData.localUser;
 
   @override
   void dispose() {
@@ -67,7 +73,7 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
 
   @override
   Widget build(BuildContext context) {
-    return circleBorder(
+    final view = circleBorder(
       child: ValueListenableBuilder<bool>(
         valueListenable:
             ZegoUIKit().getCameraStateNotifier(widget.user?.id ?? ''),
@@ -99,6 +105,67 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
                 );
         },
       ),
+    );
+
+    final isLocalUser =
+        null != widget.user && ZegoUIKit().getLocalUser().id == widget.user?.id;
+    return isLocalUser ? localCameraFlipAnimation(view) : view;
+  }
+
+  Widget localCameraFlipAnimation(Widget child) {
+    /// local user, camera switch animation
+    return ValueListenableBuilder<bool>(
+      valueListenable: localUserData.isFrontFacing,
+      builder: (context, isReadyFrontFacing, _) {
+        localUserData.mainChannel.isCapturedVideoFirstFrame
+            .addListener(onCapturedVideoFirstFrameAfterSwitchCamera);
+
+        return ZegoUIKitFlipTransition(
+          key: ValueKey(localUserData.id),
+          isFlippedNotifier: isLocalUserFlippedNotifier,
+          child: ValueListenableBuilder<bool>(
+            valueListenable:
+                localUserData.mainChannel.isRenderedVideoFirstFrame,
+            builder: (context, isRenderedVideoFirstFrame, _) {
+              return isRenderedVideoFirstFrame
+                  ? child
+                  : Stack(
+                      children: [
+                        child,
+
+                        /// it was an overlay of the rendered frame, but the current video frame could not be obtained
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.grey.withOpacity(0.05),
+                                Colors.black.withOpacity(0.1),
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  void onCapturedVideoFirstFrameAfterSwitchCamera() {
+    ZegoUIKitCore
+        .shared.coreData.localUser.mainChannel.isCapturedVideoFirstFrame
+        .removeListener(onCapturedVideoFirstFrameAfterSwitchCamera);
+
+    isLocalUserFlippedNotifier.value = !isLocalUserFlippedNotifier.value;
+
+    ZegoLoggerService.logInfo(
+      'onCapturedVideoFirstFrameAfterSwitchCamera',
+      tag: 'uikit-component',
+      subTag: 'audio video view',
     );
   }
 
