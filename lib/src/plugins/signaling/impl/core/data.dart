@@ -314,8 +314,17 @@ class ZegoSignalingPluginCoreData
     }
 
     if (currentRoomID != null) {
+      if (currentRoomID == roomID) {
+        ZegoLoggerService.logInfo(
+          'same room has login.',
+          tag: 'uikit-plugin-signaling',
+          subTag: 'core data',
+        );
+        return ZegoSignalingPluginJoinRoomResult();
+      }
+
       ZegoLoggerService.logInfo(
-        'room has login.',
+        'has login different room.',
         tag: 'uikit-plugin-signaling',
         subTag: 'core data',
       );
