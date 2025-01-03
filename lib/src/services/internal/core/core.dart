@@ -818,6 +818,14 @@ class ZegoUIKitCore
     await coreData.muteAllPlayStreamAudioVideo(true);
   }
 
+  Future<void> startPlayAllAudio() async {
+    await coreData.muteAllPlayStreamAudio(false);
+  }
+
+  Future<void> stopPlayAllAudio() async {
+    await coreData.muteAllPlayStreamAudio(true);
+  }
+
   Future<bool> muteUserAudioVideo(String userID, bool mute) async {
     return coreData.mutePlayStreamAudioVideo(
       userID,

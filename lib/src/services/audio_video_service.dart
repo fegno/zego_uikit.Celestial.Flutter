@@ -11,6 +11,16 @@ mixin ZegoAudioVideoService {
     return ZegoUIKitCore.shared.stopPlayAllAudioVideo();
   }
 
+  /// start play all audio
+  Future<void> startPlayAllAudio() async {
+    return ZegoUIKitCore.shared.startPlayAllAudio();
+  }
+
+  /// stop play all audio
+  Future<void> stopPlayAllAudio() async {
+    return ZegoUIKitCore.shared.stopPlayAllAudio();
+  }
+
   /// When the [mute] is set to true, it means that the device is not actually turned off, but muted.
   /// The default value is false, which means the device is turned off.
   /// When either the camera or the microphone is muted, the audio and video views will still be visible.

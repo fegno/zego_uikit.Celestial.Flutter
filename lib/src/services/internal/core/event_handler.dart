@@ -377,7 +377,8 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
       'state:$state, '
       'errorCode:$errorCode, '
       'extendedData:$extendedData, '
-      'isAllPlayStreamAudioVideoMuted:${coreData.isAllPlayStreamAudioVideoMuted}',
+      'isAllPlayStreamAudioVideoMuted:${coreData.isAllPlayStreamAudioVideoMuted}, '
+      'isAllPlayStreamAudioMuted:${coreData.isAllPlayStreamAudioMuted}, ',
       tag: 'uikit-service-core',
       subTag: 'event',
     );

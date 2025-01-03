@@ -87,6 +87,7 @@ class ZegoUIKitCoreData
     media.clear();
 
     isAllPlayStreamAudioVideoMuted = false;
+    isAllPlayStreamAudioMuted = false;
 
     remoteUsersList.clear();
     streamDic.clear();

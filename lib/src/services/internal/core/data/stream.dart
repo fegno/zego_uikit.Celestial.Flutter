@@ -61,6 +61,7 @@ mixin ZegoUIKitCoreDataStream {
       ZegoAudioVideoResourceMode.defaultMode;
 
   bool isAllPlayStreamAudioVideoMuted = false;
+  bool isAllPlayStreamAudioMuted = false;
 
   StreamController<List<ZegoUIKitCoreUser>>? audioVideoListStreamCtrl;
   StreamController<String>? turnOnYourCameraRequestStreamCtrl;
@@ -727,6 +728,18 @@ mixin ZegoUIKitCoreDataStream {
         }
       }
     });
+  }
+
+  Future<void> muteAllPlayStreamAudio(bool isMuted) async {
+    ZegoLoggerService.logInfo(
+      'muted: $isMuted, streamDic:$streamDic',
+      tag: 'uikit-stream',
+      subTag: 'mute all play stream audio',
+    );
+
+    isAllPlayStreamAudioMuted = isMuted;
+    await ZegoExpressEngine.instance
+        .muteAllPlayStreamAudio(isAllPlayStreamAudioMuted);
   }
 
   Future<void> startPlayingStreamQueue(

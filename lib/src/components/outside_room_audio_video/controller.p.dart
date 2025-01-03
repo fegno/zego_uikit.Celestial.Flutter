@@ -55,6 +55,9 @@ class ZegoOutsideRoomAudioVideoViewControllerPrivate {
 
   Future<bool> init() async {
     return initSDK().then((_) async {
+      /// audio should not be played
+      ZegoUIKit().stopPlayAllAudio();
+
       return await joinRoom().then((result) {
         renderTimer ??= startRenderTimer();
 
@@ -70,6 +73,9 @@ class ZegoOutsideRoomAudioVideoViewControllerPrivate {
 
     return playAll(isPlay: false).then((_) async {
       return leaveRoom().then((_) async {
+        /// resotre audio state to not muted
+        ZegoUIKit().startPlayAllAudio();
+
         return await uninitSDK();
       });
     });
