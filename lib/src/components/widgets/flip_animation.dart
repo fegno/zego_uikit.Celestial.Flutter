@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 class ZegoUIKitFlipTransition extends StatefulWidget {
   final Widget child;
   final ValueNotifier<bool> isFlippedNotifier;
+  final ValueNotifier<bool> isFrontTriggerByTurnOnCamera;
   final Duration duration;
 
   const ZegoUIKitFlipTransition({
     Key? key,
     required this.child,
     required this.isFlippedNotifier,
+    required this.isFrontTriggerByTurnOnCamera,
     this.duration = const Duration(milliseconds: 300),
   }) : super(key: key);
 
@@ -42,6 +44,11 @@ class _ZegoUIKitFlipTransitionState extends State<ZegoUIKitFlipTransition>
   }
 
   void _onFlipChanged() {
+    if (widget.isFrontTriggerByTurnOnCamera.value) {
+      widget.isFrontTriggerByTurnOnCamera.value = false;
+      return;
+    }
+
     _controller.forward(from: 0.0);
   }
 

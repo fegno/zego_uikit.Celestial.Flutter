@@ -167,6 +167,8 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
         return ZegoUIKitFlipTransition(
           key: ValueKey(localUserData.id),
           isFlippedNotifier: isLocalUserFlippedNotifier,
+          isFrontTriggerByTurnOnCamera:
+              localUserData.isFrontTriggerByTurnOnCamera,
           child: ValueListenableBuilder<bool>(
             valueListenable:
                 localUserData.mainChannel.isRenderedVideoFirstFrame,

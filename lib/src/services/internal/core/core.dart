@@ -724,6 +724,16 @@ class ZegoUIKitCore
   }
 
   Future<bool> useFrontFacingCamera(bool isFrontFacing) async {
+    if (!coreData.localUser.camera.value) {
+      ZegoLoggerService.logInfo(
+        'camera not open now',
+        tag: 'uikit-camera',
+        subTag: 'use front facing camera',
+      );
+
+      return false;
+    }
+
     if (isFrontFacing == coreData.localUser.isFrontFacing.value) {
       ZegoLoggerService.logInfo(
         'Already ${isFrontFacing ? 'front' : 'back'}',
@@ -976,6 +986,7 @@ class ZegoUIKitCore
       subTag: 'switch camera',
     );
 
+    coreData.localUser.isFrontTriggerByTurnOnCamera.value = true;
     coreData.localUser.cameraMuteMode.value = false;
     coreData.localUser.camera.value = isOn;
 

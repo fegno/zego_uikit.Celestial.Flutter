@@ -209,6 +209,7 @@ class ZegoUIKitCoreUser {
 
   // only for local
   ValueNotifier<bool> isFrontFacing = ValueNotifier<bool>(true);
+  ValueNotifier<bool> isFrontTriggerByTurnOnCamera = ValueNotifier<bool>(false);
   ValueNotifier<bool> isVideoMirror = ValueNotifier<bool>(false);
   ValueNotifier<ZegoUIKitAudioRoute> audioRoute =
       ValueNotifier<ZegoUIKitAudioRoute>(ZegoUIKitAudioRoute.receiver);
