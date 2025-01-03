@@ -25,8 +25,12 @@ class ZegoOutsideRoomAudioVideoViewListConfig {
   /// default is ZegoUIKitVideoConfig.preset180P()
   final ZegoUIKitVideoConfig? video;
 
+  /// audio video resource mode
+  final ZegoAudioVideoResourceMode? audioVideoResourceMode;
+
   const ZegoOutsideRoomAudioVideoViewListConfig({
     this.playMode = ZegoOutsideRoomAudioVideoViewListPlayMode.autoPlay,
+    this.audioVideoResourceMode = ZegoAudioVideoResourceMode.onlyRTC,
     this.video,
   });
 }

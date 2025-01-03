@@ -1154,10 +1154,14 @@ mixin ZegoUIKitCoreDataStream {
           .viewID = viewID;
       final canvas = ZegoCanvas(viewID, viewMode: ZegoViewMode.AspectFill);
 
+      final playConfig = ZegoPlayerConfig(
+        ZegoUIKitCore.shared.coreData.playResourceMode.toSdkValue,
+      );
       await startPlayingStreamByExpress(
         viewID: viewID,
         streamID: streamID,
         canvas: canvas,
+        config: playConfig,
         onPlayerStateUpdated: onPlayerStateUpdated,
       );
     }).then((widget) {
@@ -1264,10 +1268,16 @@ mixin ZegoUIKitCoreDataStream {
       ZegoExpressEngine.instance.createCanvasView((viewID) async {
         mixerStreamDic[mixerID]!.viewID = viewID;
         final canvas = ZegoCanvas(viewID, viewMode: ZegoViewMode.AspectFill);
+
+        final playConfig = ZegoPlayerConfig(
+          ZegoUIKitCore.shared.coreData.playResourceMode.toSdkValue,
+        );
+
         startPlayingStreamByExpress(
           viewID: viewID,
           streamID: mixerID,
           canvas: canvas,
+          config: playConfig,
           onPlayerStateUpdated: onPlayerStateUpdated,
         );
 

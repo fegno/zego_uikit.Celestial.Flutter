@@ -537,6 +537,12 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
         targetUser.camera.value = false;
     }
 
+    if (targetUser.isAnotherRoomUser) {
+      if (ZegoRemoteDeviceState.NotSupport == state) {
+        targetUser.camera.value = true;
+      }
+    }
+
     if (oldCameraValue != targetUser.camera.value ||
         oldCameraMuteValue != targetUser.cameraMuteMode.value) {
       /// notify outside to update audio video list

@@ -296,7 +296,7 @@ class _ZegoOutsideRoomAudioVideoViewListState
                     ZegoLoggerService.logInfo(
                       '${stream.user.id}\'s camera is not open',
                       tag: 'uikit-component',
-                      subTag: 'audio video view',
+                      subTag: 'outside room audio video view',
                     );
 
                     return Container();

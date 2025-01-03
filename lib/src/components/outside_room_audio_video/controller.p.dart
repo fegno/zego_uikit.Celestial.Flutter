@@ -116,6 +116,8 @@ class ZegoOutsideRoomAudioVideoViewControllerPrivate {
         subTag: 'initSDK',
       );
 
+      ZegoUIKit().login(localUser.id, localUser.name);
+
       sdkInitNotifier.value = true;
 
       return true;
@@ -127,7 +129,6 @@ class ZegoOutsideRoomAudioVideoViewControllerPrivate {
       subTag: 'initSDK',
     );
 
-    ZegoUIKit().login(localUser.id, localUser.name);
     return ZegoUIKit()
         .init(
       appID: _appID,
