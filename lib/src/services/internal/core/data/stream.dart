@@ -1155,14 +1155,30 @@ mixin ZegoUIKitCoreDataStream {
     );
 
     await ZegoExpressEngine.instance.createCanvasView((viewID) async {
+      var targetUserIndex = ZegoUIKitCore.shared.coreData.remoteUsersList
+          .indexWhere((user) => userID == user.id);
+
+      if (-1 == targetUserIndex) {
+        ZegoLoggerService.logInfo(
+          'createCanvasView onViewCreated, '
+          'but user can not find now! '
+          'userID:$userID, targetUserIndex:$targetUserIndex, ',
+          tag: 'uikit-stream',
+          subTag: 'start play another room stream',
+        );
+
+        return;
+      }
+
       ZegoLoggerService.logInfo(
         'createCanvasView onViewCreated, '
         'viewID:$viewID, '
         'remote user list:${ZegoUIKitCore.shared.coreData.remoteUsersList}, '
-        'targetUserIndex:$targetUserIndex, ',
+        'userID:$userID, userName:$userName, targetUserIndex:$targetUserIndex, ',
         tag: 'uikit-stream',
         subTag: 'start play another room stream',
       );
+
       ZegoUIKitCore.shared.coreData.remoteUsersList[targetUserIndex].mainChannel
           .viewID = viewID;
       final canvas = ZegoCanvas(viewID, viewMode: ZegoViewMode.AspectFill);
@@ -1178,11 +1194,26 @@ mixin ZegoUIKitCoreDataStream {
         onPlayerStateUpdated: onPlayerStateUpdated,
       );
     }).then((widget) {
+      var targetUserIndex = ZegoUIKitCore.shared.coreData.remoteUsersList
+          .indexWhere((user) => userID == user.id);
+
+      if (-1 == targetUserIndex) {
+        ZegoLoggerService.logInfo(
+          'createCanvasView done, '
+          'but user can not find now! '
+          'userID:$userID, targetUserIndex:$targetUserIndex, ',
+          tag: 'uikit-stream',
+          subTag: 'start play another room stream',
+        );
+
+        return;
+      }
+
       ZegoLoggerService.logInfo(
         'createCanvasView done, '
         'widget:$widget, '
         'roomID:$roomID, '
-        'userID:$userID, userName:$userName, '
+        'userID:$userID, userName:$userName, targetUserIndex:$targetUserIndex, '
         'streamID:$streamID, ',
         tag: 'uikit-stream',
         subTag: 'start play another room stream',
