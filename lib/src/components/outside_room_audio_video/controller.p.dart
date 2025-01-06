@@ -36,9 +36,7 @@ class ZegoOutsideRoomAudioVideoViewControllerPrivate {
   final sdkInitNotifier = ValueNotifier<bool>(false);
   final roomLoginNotifier = ValueNotifier<bool>(false);
 
-  Timer? renderTimer;
-  bool renderTimerInProgress = false;
-
+  List<ZegoOutsideRoomAudioVideoViewStream> previousStreams = [];
   final streamsNotifier =
       ValueNotifier<List<ZegoOutsideRoomAudioVideoViewStream>>([]);
   final event = ZegoOutsideRoomAudioVideoViewExpressEvent();
@@ -59,7 +57,11 @@ class ZegoOutsideRoomAudioVideoViewControllerPrivate {
       ZegoUIKit().stopPlayAllAudio();
 
       return await joinRoom().then((result) {
-        renderTimer ??= startRenderTimer();
+        onStreamsUpdated();
+        streamsNotifier.addListener(onStreamsUpdated);
+
+        /// todo remove timer
+        // renderTimer ??= startRenderTimer();
 
         return result;
       });
@@ -67,13 +69,15 @@ class ZegoOutsideRoomAudioVideoViewControllerPrivate {
   }
 
   Future<bool> uninit() async {
-    renderTimer?.cancel();
-    renderTimer = null;
-    renderTimerInProgress = false;
+    previousStreams.forEach((stream) {
+      stream.isVisibleNotifier.removeListener(onStreamVisibleStateUpdate);
+    });
+    previousStreams.clear();
+    streamsNotifier.removeListener(onStreamsUpdated);
 
     return playAll(isPlay: false).then((_) async {
       return leaveRoom().then((_) async {
-        /// resotre audio state to not muted
+        /// restore audio state to not muted
         ZegoUIKit().startPlayAllAudio();
 
         return await uninitSDK();
@@ -388,32 +392,30 @@ class ZegoOutsideRoomAudioVideoViewControllerPrivate {
     updateNotifier.value = DateTime.now().millisecondsSinceEpoch;
   }
 
-  Timer startRenderTimer() {
-    return Timer.periodic(
-      const Duration(milliseconds: 500),
-      (timer) async {
-        if (renderTimerInProgress) {
-          return;
-        }
+  void onStreamsUpdated() {
+    previousStreams.forEach((stream) {
+      stream.isVisibleNotifier.removeListener(onStreamVisibleStateUpdate);
+    });
+    previousStreams.clear();
 
-        renderTimerInProgress = true;
-        debugPrint('---- begin;');
+    streamsNotifier.value.forEach((stream) {
+      stream.isVisibleNotifier.addListener(onStreamVisibleStateUpdate);
+    });
+    previousStreams =
+        List<ZegoOutsideRoomAudioVideoViewStream>.from(streamsNotifier.value);
+  }
 
-        for (var stream in streamsNotifier.value) {
-          if (ZegoOutsideRoomAudioVideoViewListPlayMode.autoPlay ==
-              _config.playMode) {
-            await playOne(
-              user: stream.user,
-              roomID: stream.roomID,
-              isPlay: stream.isRendering,
-              withLog: false,
-            );
-          }
-        }
-
-        debugPrint('---- end;');
-        renderTimerInProgress = false;
-      },
-    );
+  Future<void> onStreamVisibleStateUpdate() async {
+    if (ZegoOutsideRoomAudioVideoViewListPlayMode.autoPlay ==
+        _config.playMode) {
+      streamsNotifier.value.forEach((stream) async {
+        await playOne(
+          user: stream.user,
+          roomID: stream.roomID,
+          toPlay: stream.isVisibleNotifier.value,
+          withLog: false,
+        );
+      });
+    }
   }
 }

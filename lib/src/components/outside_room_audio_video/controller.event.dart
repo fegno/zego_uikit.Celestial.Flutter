@@ -27,14 +27,14 @@ class ZegoOutsideRoomAudioVideoViewExpressEvent
     int errorCode,
     Map<String, dynamic> extendedData,
   ) {
-    // final queryIndex = (_streamsNotifier?.value ?? [])
-    //     .indexWhere((streamInfo) => streamInfo.targetStreamID == streamID);
-    // if (-1 == queryIndex) {
-    //   return;
-    // }
+    final queryIndex = (_streamsNotifier?.value ?? [])
+        .indexWhere((streamInfo) => streamInfo.targetStreamID == streamID);
+    if (-1 == queryIndex) {
+      return;
+    }
 
-    // _streamsNotifier?.value[queryIndex].isPlaying =
-    //     ZegoPlayerState.Playing == state;
+    _streamsNotifier?.value[queryIndex].isPlaying =
+        ZegoPlayerState.Playing == state;
   }
 
   @override
