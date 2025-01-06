@@ -1,3 +1,9 @@
+
+## 2.28.2
+
+- Features
+  - Add animation effect on camera flip
+
 ## 2.28.1
 
 - Fix screen-sharing outside the app, remote pull-based streaming has no sound

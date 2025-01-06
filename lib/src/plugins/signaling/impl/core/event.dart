@@ -14,7 +14,7 @@ mixin ZegoSignalingPluginCoreEvent {
   List<StreamSubscription<dynamic>> streamSubscriptions = [];
 
   void initEvent() {
-    if(isEventInit) {
+    if (isEventInit) {
       return;
     }
 
