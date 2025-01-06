@@ -91,7 +91,7 @@ class _ZegoOutsideRoomAudioVideoViewListState
         ZegoLoggerService.logInfo(
           'play mode is not auto',
           tag: 'outside room audio video view',
-          subTag: 'initSDK',
+          subTag: 'outside room audio video view',
         );
       }
     });
@@ -145,7 +145,7 @@ class _ZegoOutsideRoomAudioVideoViewListState
           'layout ${constraints.maxWidth} x ${constraints.maxHeight}, '
           'item:$itemWidth x $itemHeight',
           tag: 'outside room audio video view',
-          subTag: 'initSDK',
+          subTag: 'outside room audio video view',
         );
 
         return SingleChildScrollView(
@@ -174,8 +174,11 @@ class _ZegoOutsideRoomAudioVideoViewListState
                   List<ZegoOutsideRoomAudioVideoViewStream>>(
                 valueListenable: widget.controller.private.streamsNotifier,
                 builder: (context, streams, _) {
-                  return ListView.builder(
-                    shrinkWrap: true,
+                  return GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: widget.style.scrollAxisCount,
+                      childAspectRatio: widget.style.itemAspectRatio,
+                    ),
                     scrollDirection: widget.style.scrollDirection,
                     itemCount: streams.length,
                     itemBuilder: (BuildContext context, int index) {

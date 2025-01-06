@@ -10,6 +10,13 @@ class ZegoOutsideRoomAudioVideoViewListStyle {
   /// scroll direction, default is horizontal
   final Axis scrollDirection;
 
+  /// How many rows and columns should be placed in the specified direction?
+  /// For example, the horizontal direction represents how many rows there are, and the vertical direction represents how many columns there are
+  final int scrollAxisCount;
+
+  /// item aspect ratio
+  final double itemAspectRatio;
+
   /// border radius
   final double borderRadius;
 
@@ -39,6 +46,8 @@ class ZegoOutsideRoomAudioVideoViewListStyle {
     this.backgroundColor = Colors.white,
     this.backgroundColorOpacity = 0.5,
     this.loadingBuilder,
+    this.scrollAxisCount = 1,
+    this.itemAspectRatio = 16 / 9.0,
     this.item = const ZegoOutsideRoomAudioVideoViewListItemStyle(),
   });
 }
