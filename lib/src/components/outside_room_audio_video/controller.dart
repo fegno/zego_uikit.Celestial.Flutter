@@ -64,7 +64,7 @@ class ZegoOutsideRoomAudioVideoViewListController {
     return private.playOne(
       user: stream.user,
       roomID: stream.roomID,
-      isPlay: true,
+      toPlay: true,
     );
   }
 
@@ -81,7 +81,7 @@ class ZegoOutsideRoomAudioVideoViewListController {
     return private.playOne(
       user: stream.user,
       roomID: stream.roomID,
-      isPlay: false,
+      toPlay: false,
     );
   }
 

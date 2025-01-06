@@ -186,7 +186,7 @@ class _ZegoOutsideRoomAudioVideoViewListState
                       return VisibilityDetector(
                         key: Key(stream.targetStreamID),
                         onVisibilityChanged: (visibilityInfo) async {
-                          stream.isRendering =
+                          stream.isVisibleNotifier.value =
                               visibilityInfo.visibleFraction > 0.1;
                         },
                         child: listItem(stream, itemWidth, itemHeight),

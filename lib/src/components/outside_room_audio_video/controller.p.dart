@@ -299,7 +299,7 @@ class ZegoOutsideRoomAudioVideoViewControllerPrivate {
   Future<bool> playOne({
     required ZegoUIKitUser user,
     required String roomID,
-    required bool isPlay,
+    required bool toPlay,
     bool withLog = true,
   }) async {
     if (!ZegoUIKitCore.shared.isInit) {
@@ -307,7 +307,7 @@ class ZegoOutsideRoomAudioVideoViewControllerPrivate {
         ZegoLoggerService.logInfo(
           'has not init sdk',
           tag: 'outside room audio video controller.p',
-          subTag: isPlay ? 'startPlayOne' : 'stopPlayOne',
+          subTag: toPlay ? 'startPlayOne' : 'stopPlayOne',
         );
       }
 
@@ -319,7 +319,7 @@ class ZegoOutsideRoomAudioVideoViewControllerPrivate {
         ZegoLoggerService.logInfo(
           'has not login room',
           tag: 'outside room audio video controller.p',
-          subTag: isPlay ? 'startPlayOne' : 'stopPlayOne',
+          subTag: toPlay ? 'startPlayOne' : 'stopPlayOne',
         );
       }
 
@@ -333,7 +333,7 @@ class ZegoOutsideRoomAudioVideoViewControllerPrivate {
         ZegoLoggerService.logInfo(
           'user not exist',
           tag: 'outside room audio video controller.p',
-          subTag: isPlay ? 'startPlayOne' : 'stopPlayOne',
+          subTag: toPlay ? 'startPlayOne' : 'stopPlayOne',
         );
       }
 
@@ -342,22 +342,22 @@ class ZegoOutsideRoomAudioVideoViewControllerPrivate {
 
     final streamInfo = streamsNotifier.value[queryIndex];
 
-    if (isPlay && streamInfo.isPlaying) {
+    if (toPlay && streamInfo.isPlaying) {
       if (withLog) {
         ZegoLoggerService.logInfo(
           '${streamInfo.targetStreamID} is playing',
           tag: 'outside room audio video controller.p',
-          subTag: isPlay ? 'startPlayOne' : 'stopPlayOne',
+          subTag: toPlay ? 'startPlayOne' : 'stopPlayOne',
         );
       }
 
       return false;
-    } else if (!isPlay && !streamInfo.isPlaying) {
+    } else if (!toPlay && !streamInfo.isPlaying) {
       if (withLog) {
         ZegoLoggerService.logInfo(
           '${streamInfo.targetStreamID} is not playing',
           tag: 'outside room audio video controller.p',
-          subTag: isPlay ? 'startPlayOne' : 'stopPlayOne',
+          subTag: toPlay ? 'startPlayOne' : 'stopPlayOne',
         );
       }
 
@@ -367,11 +367,11 @@ class ZegoOutsideRoomAudioVideoViewControllerPrivate {
     ZegoLoggerService.logInfo(
       'stream id:${streamInfo.targetStreamID}',
       tag: 'outside room audio video controller.p',
-      subTag: isPlay ? 'startPlayOne' : 'stopPlayOne',
+      subTag: toPlay ? 'startPlayOne' : 'stopPlayOne',
     );
 
-    streamInfo.isPlaying = isPlay;
-    isPlay
+    streamInfo.isPlaying = toPlay;
+    toPlay
         ? await ZegoUIKit().startPlayAnotherRoomAudioVideo(
             streamInfo.roomID,
             streamInfo.user.id,

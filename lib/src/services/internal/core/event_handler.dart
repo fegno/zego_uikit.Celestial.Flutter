@@ -644,11 +644,11 @@ class ZegoUIKitCoreEventHandlerImpl extends ZegoUIKitExpressEventInterface {
         if (coreData.mixerStreamDic.containsKey(streamID)) {
           return;
         }
-        ZegoLoggerService.logInfo(
-          'stream dic does not contain $streamID',
-          tag: 'uikit-service-core',
-          subTag: 'event',
-        );
+        // ZegoLoggerService.logInfo(
+        //   'stream dic does not contain $streamID',
+        //   tag: 'uikit-service-core',
+        //   subTag: 'event',
+        // );
         return;
       }
 

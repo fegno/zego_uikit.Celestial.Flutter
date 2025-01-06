@@ -2,14 +2,18 @@
 import 'dart:math';
 
 // Project imports:
+import 'package:flutter/cupertino.dart';
 import 'package:zego_uikit/src/components/outside_room_audio_video/defines.dart';
 import 'package:zego_uikit/src/services/internal/core/core.dart';
 import 'package:zego_uikit/src/services/services.dart';
 
 class ZegoOutsideRoomAudioVideoViewStream
     extends ZegoOutsideRoomAudioVideoViewStreamUser {
+  /// stream is playing or not
   bool isPlaying = false;
-  bool isRendering = false;
+
+  /// view can visible or not
+  final isVisibleNotifier = ValueNotifier<bool>(false);
 
   ZegoOutsideRoomAudioVideoViewStream({
     required ZegoUIKitUser user,
@@ -25,7 +29,7 @@ class ZegoOutsideRoomAudioVideoViewStream
     return 'room id:$roomID, '
         'user id:${user.id}, '
         'isPlaying:$isPlaying, '
-        'isRendering:$isRendering, ';
+        'isVisible:${isVisibleNotifier.value}, ';
   }
 }
 
