@@ -1,6 +1,7 @@
 name: zego_uikit
 description: ZegoUIKit is a low-code offering with pre-built and UI-ready components, such as AudioVideoView, CameraButtons, etc. Save time and assemble features fast with ZegoUIKit.
 version: 2.28.2
+publish_to: none
 homepage: https://www.zegocloud.com/
 
 environment:
@@ -28,6 +29,15 @@ dependencies:
   plugin_platform_interface: ^2.1.8
   visibility_detector: ^0.4.0+2
   connectivity_plus: ^6.1.0
+  celestial:
+    git:
+      url: https://github.com/fegno/Celestial.Flutter.git
+      ref: master
+
+dependency_overrides:
+  web: any
+  intl: any
+  package_info_plus: any
 
 dev_dependencies:
   flutter_test:
