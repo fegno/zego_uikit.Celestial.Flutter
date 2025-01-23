@@ -16,12 +16,7 @@ import 'package:zego_uikit/src/plugins/signaling/impl/core/notification_data.dar
 import 'package:zego_uikit/src/services/services.dart';
 
 /// @nodoc
-class ZegoSignalingPluginCoreData
-    with
-        ZegoSignalingPluginCoreInvitationData,
-        ZegoSignalingPluginCoreNotificationData,
-        ZegoSignalingPluginCoreEvent,
-        ZegoSignalingPluginCoreAdvanceInvitationData {
+class ZegoSignalingPluginCoreData with ZegoSignalingPluginCoreInvitationData, ZegoSignalingPluginCoreNotificationData, ZegoSignalingPluginCoreEvent, ZegoSignalingPluginCoreAdvanceInvitationData {
   ZegoSignalingPluginCoreData() {
     initData();
   }
@@ -105,6 +100,7 @@ class ZegoSignalingPluginCoreData
     uninitData();
   }
 
+  @pragma('vm:entry-point')
   void initData() {
     if (isDataInit) {
       return;
@@ -236,8 +232,7 @@ class ZegoSignalingPluginCoreData
     currentUserID = null;
     currentUserName = null;
 
-    final pluginResult =
-        await ZegoPluginAdapter().signalingPlugin!.disconnectUser();
+    final pluginResult = await ZegoPluginAdapter().signalingPlugin!.disconnectUser();
 
     if (pluginResult.timeout) {
       ZegoLoggerService.logInfo(
@@ -272,8 +267,7 @@ class ZegoSignalingPluginCoreData
       subTag: 'core data',
     );
 
-    final pluginResult =
-        await ZegoPluginAdapter().signalingPlugin!.renewToken(token);
+    final pluginResult = await ZegoPluginAdapter().signalingPlugin!.renewToken(token);
 
     if (pluginResult.error == null) {
       ZegoLoggerService.logInfo(
@@ -342,9 +336,7 @@ class ZegoSignalingPluginCoreData
       subTag: 'core data',
     );
 
-    final pluginResult = await ZegoPluginAdapter()
-        .signalingPlugin!
-        .joinRoom(roomID: roomID, roomName: roomName);
+    final pluginResult = await ZegoPluginAdapter().signalingPlugin!.joinRoom(roomID: roomID, roomName: roomName);
 
     if (pluginResult.error == null) {
       ZegoLoggerService.logInfo(
@@ -393,9 +385,7 @@ class ZegoSignalingPluginCoreData
       tag: 'uikit-plugin-signaling',
       subTag: 'core data',
     );
-    final pluginResult = await ZegoPluginAdapter()
-        .signalingPlugin!
-        .leaveRoom(roomID: currentRoomID!);
+    final pluginResult = await ZegoPluginAdapter().signalingPlugin!.leaveRoom(roomID: currentRoomID!);
 
     if (pluginResult.error == null) {
       ZegoLoggerService.logInfo(
@@ -446,8 +436,7 @@ class ZegoSignalingPluginCoreData
   }
 
   /// on connection state changed
-  void onConnectionStateChanged(
-      ZegoSignalingPluginConnectionStateChangedEvent event) {
+  void onConnectionStateChanged(ZegoSignalingPluginConnectionStateChangedEvent event) {
     ZegoLoggerService.logInfo(
       'connection state changed, $event',
       tag: 'uikit-plugin-signaling',
@@ -465,8 +454,7 @@ class ZegoSignalingPluginCoreData
     }
   }
 
-  void onNotificationArrived(
-      ZegoSignalingPluginNotificationArrivedEvent event) {
+  void onNotificationArrived(ZegoSignalingPluginNotificationArrivedEvent event) {
     ZegoLoggerService.logInfo(
       'notification arrived, $event',
       tag: 'uikit-plugin-signaling',
@@ -474,8 +462,7 @@ class ZegoSignalingPluginCoreData
     );
   }
 
-  void onNotificationClicked(
-      ZegoSignalingPluginNotificationClickedEvent event) {
+  void onNotificationClicked(ZegoSignalingPluginNotificationClickedEvent event) {
     ZegoLoggerService.logInfo(
       'notification clicked, $event',
       tag: 'uikit-plugin-signaling',
@@ -483,8 +470,7 @@ class ZegoSignalingPluginCoreData
     );
   }
 
-  void onNotificationRegistered(
-      ZegoSignalingPluginNotificationRegisteredEvent event) {
+  void onNotificationRegistered(ZegoSignalingPluginNotificationRegisteredEvent event) {
     ZegoLoggerService.logInfo(
       'notification registered, $event',
       tag: 'uikit-plugin-signaling',

@@ -28,6 +28,7 @@ mixin ZegoPluginService {
   }
 
   /// signal plugin
+  @pragma('vm:entry-point')
   ZegoUIKitSignalingPluginImpl getSignalingPlugin() {
     /// make sure core data's stream had created
     ZegoSignalingPluginCore.shared.coreData.initData();
@@ -41,8 +42,7 @@ mixin ZegoPluginService {
   }
 
   ZegoUIKitBeautyPluginImpl getBeautyPlugin() {
-    assert(ZegoPluginAdapter().getPlugin(ZegoUIKitPluginType.beauty) != null,
-        'ZegoUIKitBeautyPluginImpl: ZegoUIKitPluginType.beauty is null');
+    assert(ZegoPluginAdapter().getPlugin(ZegoUIKitPluginType.beauty) != null, 'ZegoUIKitBeautyPluginImpl: ZegoUIKitPluginType.beauty is null');
 
     return ZegoUIKitBeautyPluginImpl.shared;
   }

@@ -61,8 +61,7 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
   int get userViewID => ZegoUIKit().getAudioVideoViewID(widget.user!.id);
   bool get userViewIDIsEmpty => -1 == userViewID;
 
-  ZegoUIKitCoreUser get localUserData =>
-      ZegoUIKitCore.shared.coreData.localUser;
+  ZegoUIKitCoreUser get localUserData => ZegoUIKitCore.shared.coreData.localUser;
 
   List<StreamSubscription<dynamic>?> subscriptions = [];
 
@@ -72,9 +71,7 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
 
     subscriptions
       ..add(ZegoUIKit().getUserListStream().listen(onUserListUpdated))
-      ..add(ZegoUIKit()
-          .getAudioVideoListStream()
-          .listen(onAudioVideoListUpdated));
+      ..add(ZegoUIKit().getAudioVideoListStream().listen(onAudioVideoListUpdated));
   }
 
   @override
@@ -117,8 +114,7 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
 
     final view = circleBorder(
       child: ValueListenableBuilder<bool>(
-        valueListenable:
-            ZegoUIKit().getCameraStateNotifier(widget.user?.id ?? ''),
+        valueListenable: ZegoUIKit().getCameraStateNotifier(widget.user?.id ?? ''),
         builder: (context, isCameraOn, _) {
           ZegoLoggerService.logInfo(
             '${widget.user?.id}\'s camera changed $isCameraOn,',
@@ -149,8 +145,7 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
       ),
     );
 
-    final isLocalUser =
-        null != widget.user && ZegoUIKit().getLocalUser().id == widget.user?.id;
+    final isLocalUser = null != widget.user && ZegoUIKit().getLocalUser().id == widget.user?.id;
     return SizedBox.expand(
       child: isLocalUser ? localCameraFlipAnimation(view) : view,
     );
@@ -161,17 +156,14 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
     return ValueListenableBuilder<bool>(
       valueListenable: localUserData.isFrontFacing,
       builder: (context, isReadyFrontFacing, _) {
-        localUserData.mainChannel.isCapturedVideoFirstFrame
-            .addListener(onCapturedVideoFirstFrameAfterSwitchCamera);
+        localUserData.mainChannel.isCapturedVideoFirstFrame.addListener(onCapturedVideoFirstFrameAfterSwitchCamera);
 
         return ZegoUIKitFlipTransition(
           key: ValueKey(localUserData.id),
           isFlippedNotifier: isLocalUserFlippedNotifier,
-          isFrontTriggerByTurnOnCamera:
-              localUserData.isFrontTriggerByTurnOnCamera,
+          isFrontTriggerByTurnOnCamera: localUserData.isFrontTriggerByTurnOnCamera,
           child: ValueListenableBuilder<bool>(
-            valueListenable:
-                localUserData.mainChannel.isRenderedVideoFirstFrame,
+            valueListenable: localUserData.mainChannel.isRenderedVideoFirstFrame,
             builder: (context, isRenderedVideoFirstFrame, _) {
               return isRenderedVideoFirstFrame
                   ? child
@@ -202,9 +194,7 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
   }
 
   void onCapturedVideoFirstFrameAfterSwitchCamera() {
-    ZegoUIKitCore
-        .shared.coreData.localUser.mainChannel.isCapturedVideoFirstFrame
-        .removeListener(onCapturedVideoFirstFrameAfterSwitchCamera);
+    ZegoUIKitCore.shared.coreData.localUser.mainChannel.isCapturedVideoFirstFrame.removeListener(onCapturedVideoFirstFrameAfterSwitchCamera);
 
     isLocalUserFlippedNotifier.value = !isLocalUserFlippedNotifier.value;
 
@@ -242,9 +232,7 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
                   return SizedBox(
                     width: constraints.maxWidth,
                     height: constraints.maxHeight,
-                    child: isCameraOn
-                        ? audioVideoView
-                        : Container(color: Colors.transparent),
+                    child: isCameraOn ? audioVideoView : Container(color: Colors.transparent),
                   );
                 },
               );
@@ -364,8 +352,7 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
     }
 
     final decoration = BoxDecoration(
-      border: Border.all(
-          color: widget.borderColor ?? const Color(0xffA4A4A4), width: 1),
+      border: Border.all(color: widget.borderColor ?? const Color(0xffA4A4A4), width: 1),
       borderRadius: BorderRadius.all(Radius.circular(widget.borderRadius!)),
     );
 
@@ -376,8 +363,7 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
         borderRadius: BorderRadius.all(Radius.circular(widget.borderRadius!)),
         clipBehavior: Clip.antiAlias,
         elevation: 6.0,
-        shadowColor:
-            (widget.borderColor ?? const Color(0xffA4A4A4)).withOpacity(0.3),
+        shadowColor: (widget.borderColor ?? const Color(0xffA4A4A4)).withOpacity(0.3),
         child: child,
       ),
     );
@@ -386,8 +372,7 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
   Widget avatar(double maxWidth, double maxHeight) {
     final screenSize = MediaQuery.of(context).size;
     final isSmallView = maxHeight < screenSize.height / 2;
-    final avatarSize =
-        isSmallView ? Size(110.zR, 110.zR) : Size(258.zR, 258.zR);
+    final avatarSize = isSmallView ? Size(110.zR, 110.zR) : Size(258.zR, 258.zR);
 
     var sizedWidth = widget.avatarConfig?.size?.width ?? avatarSize.width;
     var sizedHeight = widget.avatarConfig?.size?.height ?? avatarSize.width;
@@ -408,8 +393,7 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
           avatarSize: widget.avatarConfig?.size ?? avatarSize,
           user: widget.user,
           showAvatar: widget.avatarConfig?.showInAudioMode ?? true,
-          showSoundLevel:
-              widget.avatarConfig?.showSoundWavesInAudioMode ?? true,
+          showSoundLevel: widget.avatarConfig?.showSoundWavesInAudioMode ?? true,
           avatarBuilder: widget.avatarConfig?.builder,
           soundLevelSize: widget.avatarConfig?.size,
           soundLevelColor: widget.avatarConfig?.soundWaveColor,
@@ -419,8 +403,7 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
   }
 
   double getAvatarTop(double maxWidth, double maxHeight, double avatarHeight) {
-    switch (
-        widget.avatarConfig?.verticalAlignment ?? ZegoAvatarAlignment.center) {
+    switch (widget.avatarConfig?.verticalAlignment ?? ZegoAvatarAlignment.center) {
       case ZegoAvatarAlignment.center:
         return (maxHeight - avatarHeight) / 2;
       case ZegoAvatarAlignment.start:
@@ -440,8 +423,7 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
     viewIDGuardTimer?.cancel();
     viewIDGuardTimer = null;
 
-    viewIDGuardTimer ??=
-        Timer.periodic(const Duration(milliseconds: 500), (timer) {
+    viewIDGuardTimer ??= Timer.periodic(const Duration(milliseconds: 500), (timer) {
       ZegoLoggerService.logInfo(
         'guard check, ${widget.user?.id}\'s view id is:$userViewID',
         tag: 'uikit-component',

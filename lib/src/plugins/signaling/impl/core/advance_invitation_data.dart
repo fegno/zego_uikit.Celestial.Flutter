@@ -13,8 +13,7 @@ import 'package:zego_uikit/src/plugins/signaling/impl/service/reporter.dart';
 import 'package:zego_uikit/src/services/services.dart';
 
 extension AdvanceInvitationStateExtension on AdvanceInvitationState {
-  static AdvanceInvitationState fromSignalingPluginInvitationUserState(
-      ZegoSignalingPluginInvitationUserState state) {
+  static AdvanceInvitationState fromSignalingPluginInvitationUserState(ZegoSignalingPluginInvitationUserState state) {
     switch (state) {
       case ZegoSignalingPluginInvitationUserState.unknown:
         return AdvanceInvitationState.error;
@@ -88,8 +87,7 @@ class AdvanceInvitationData {
 /// @nodoc
 mixin ZegoSignalingPluginCoreAdvanceInvitationData {
   // ------- events ------
-  StreamController<ZegoSignalingPluginInvitationUserStateChangedEvent>?
-      streamCtrlAdvanceInvitationUserStateChanged;
+  StreamController<ZegoSignalingPluginInvitationUserStateChangedEvent>? streamCtrlAdvanceInvitationUserStateChanged;
   StreamController<Map<String, dynamic>>? streamCtrlAdvanceInvitationReceived;
   StreamController<Map<String, dynamic>>? streamCtrlAdvanceInvitationTimeout;
   StreamController<Map<String, dynamic>>? streamCtrlAdvanceInvitationCanceled;
@@ -104,16 +102,11 @@ mixin ZegoSignalingPluginCoreAdvanceInvitationData {
       subTag: 'advance invitation data',
     );
 
-    streamCtrlAdvanceInvitationUserStateChanged ??= StreamController<
-        ZegoSignalingPluginInvitationUserStateChangedEvent>.broadcast();
-    streamCtrlAdvanceInvitationReceived ??=
-        StreamController<Map<String, dynamic>>.broadcast();
-    streamCtrlAdvanceInvitationTimeout ??=
-        StreamController<Map<String, dynamic>>.broadcast();
-    streamCtrlAdvanceInvitationCanceled ??=
-        StreamController<Map<String, dynamic>>.broadcast();
-    streamCtrlAdvanceInvitationEnded ??=
-        StreamController<Map<String, dynamic>>.broadcast();
+    streamCtrlAdvanceInvitationUserStateChanged ??= StreamController<ZegoSignalingPluginInvitationUserStateChangedEvent>.broadcast();
+    streamCtrlAdvanceInvitationReceived ??= StreamController<Map<String, dynamic>>.broadcast();
+    streamCtrlAdvanceInvitationTimeout ??= StreamController<Map<String, dynamic>>.broadcast();
+    streamCtrlAdvanceInvitationCanceled ??= StreamController<Map<String, dynamic>>.broadcast();
+    streamCtrlAdvanceInvitationEnded ??= StreamController<Map<String, dynamic>>.broadcast();
   }
 
   void uninitAdvanceInvitationData() {
@@ -141,10 +134,8 @@ mixin ZegoSignalingPluginCoreAdvanceInvitationData {
     streamCtrlAdvanceInvitationEnded = null;
   }
 
-  String? get _loginUser =>
-      ZegoSignalingPluginCore.shared.coreData.currentUserID;
-  String? get _loginUserName =>
-      ZegoSignalingPluginCore.shared.coreData.currentUserName;
+  String? get _loginUser => ZegoSignalingPluginCore.shared.coreData.currentUserID;
+  String? get _loginUserName => ZegoSignalingPluginCore.shared.coreData.currentUserName;
 
   void addAdvanceInvitationData(AdvanceInvitationData invitationData) {
     ZegoLoggerService.logInfo(
@@ -157,9 +148,7 @@ mixin ZegoSignalingPluginCoreAdvanceInvitationData {
 
   void appendAdvanceInvitationData(AdvanceInvitationData invitationData) {
     if (advanceInvitationMap.containsKey(invitationData.id)) {
-      advanceInvitationMap[invitationData.id]!
-          .invitees
-          .addAll(invitationData.invitees);
+      advanceInvitationMap[invitationData.id]!.invitees.addAll(invitationData.invitees);
 
       ZegoLoggerService.logInfo(
         'append invitation data $invitationData,'
@@ -185,8 +174,7 @@ mixin ZegoSignalingPluginCoreAdvanceInvitationData {
   }
 
   AdvanceInvitationUser? getAdvanceInvitee(String invitationID, String userID) {
-    for (final invitee in advanceInvitationMap[invitationID]?.invitees ??
-        <AdvanceInvitationUser>[]) {
+    for (final invitee in advanceInvitationMap[invitationID]?.invitees ?? <AdvanceInvitationUser>[]) {
       if (invitee.userID == userID) {
         return invitee;
       }
@@ -216,9 +204,7 @@ mixin ZegoSignalingPluginCoreAdvanceInvitationData {
       }
 
       for (var invitee in data.invitees) {
-        if (invitee.userID == userID &&
-            (AdvanceInvitationState.waiting == invitee.state ||
-                AdvanceInvitationState.accepted == invitee.state)) {
+        if (invitee.userID == userID && (AdvanceInvitationState.waiting == invitee.state || AdvanceInvitationState.accepted == invitee.state)) {
           isInInvitation = true;
           find = true;
           break;
@@ -265,9 +251,7 @@ mixin ZegoSignalingPluginCoreAdvanceInvitationData {
 
     advanceInvitationMap.forEach((id, data) {
       data.invitees.removeWhere((user) {
-        return AdvanceInvitationState.idle == user.state ||
-            AdvanceInvitationState.rejected == user.state ||
-            AdvanceInvitationState.cancelled == user.state;
+        return AdvanceInvitationState.idle == user.state || AdvanceInvitationState.rejected == user.state || AdvanceInvitationState.cancelled == user.state;
       });
     });
 
@@ -291,11 +275,9 @@ mixin ZegoSignalingPluginCoreAdvanceInvitationData {
 
   AdvanceInvitationData? removeIfAllAdvanceInviteesDone(String invitationID) {
     var isDone = true;
-    final invitees = advanceInvitationMap[invitationID]?.invitees ??
-        <AdvanceInvitationUser>[];
+    final invitees = advanceInvitationMap[invitationID]?.invitees ?? <AdvanceInvitationUser>[];
     for (final invitee in invitees) {
-      if (invitee.state == AdvanceInvitationState.waiting ||
-          invitee.state == AdvanceInvitationState.accepted) {
+      if (invitee.state == AdvanceInvitationState.waiting || invitee.state == AdvanceInvitationState.accepted) {
         /// In a multi-party call, if the call is accepted, the call will still be connected
         isDone = false;
         break;
@@ -575,14 +557,11 @@ mixin ZegoSignalingPluginCoreAdvanceInvitationData {
         )
         .then((result) {
       if (result.error == null) {
-        for (final invitee in advanceInvitationMap[invitationID]?.invitees ??
-            <AdvanceInvitationUser>[]) {
+        for (final invitee in advanceInvitationMap[invitationID]?.invitees ?? <AdvanceInvitationUser>[]) {
           final isCancelUser = invitees.contains(invitee.userID);
           final isCancelError = result.errorInvitees.contains(invitee.userID);
           if (isCancelUser) {
-            invitee.state = isCancelError
-                ? AdvanceInvitationState.error
-                : AdvanceInvitationState.cancelled;
+            invitee.state = isCancelError ? AdvanceInvitationState.error : AdvanceInvitationState.cancelled;
           }
         }
 
@@ -758,8 +737,7 @@ mixin ZegoSignalingPluginCoreAdvanceInvitationData {
           subTag: 'advance invitation data',
         );
 
-        if (ZegoUIKit().getLocalUser().id ==
-            getAdvanceInitiator(invitationID)?.userID) {
+        if (ZegoUIKit().getLocalUser().id == getAdvanceInitiator(invitationID)?.userID) {
           /// clear if quit local invitation
           ZegoLoggerService.logInfo(
             'clear local invitation data',
@@ -795,15 +773,11 @@ mixin ZegoSignalingPluginCoreAdvanceInvitationData {
 
     for (var callUser in event.callUserList) {
       /// update initiator
-      if (callUser.userID ==
-          advanceInvitationMap[event.invitationID]?.initiator.userID) {
-        advanceInvitationMap[event.invitationID]?.initiator.state =
-            AdvanceInvitationStateExtension
-                .fromSignalingPluginInvitationUserState(
+      if (callUser.userID == advanceInvitationMap[event.invitationID]?.initiator.userID) {
+        advanceInvitationMap[event.invitationID]?.initiator.state = AdvanceInvitationStateExtension.fromSignalingPluginInvitationUserState(
           callUser.state,
         );
-        advanceInvitationMap[event.invitationID]?.initiator.extendedData =
-            callUser.extendedData;
+        advanceInvitationMap[event.invitationID]?.initiator.extendedData = callUser.extendedData;
 
         continue;
       }
@@ -814,8 +788,7 @@ mixin ZegoSignalingPluginCoreAdvanceInvitationData {
         advanceInvitationMap[event.invitationID]?.invitees.add(
               AdvanceInvitationUser(
                 userID: callUser.userID,
-                state: AdvanceInvitationStateExtension
-                    .fromSignalingPluginInvitationUserState(callUser.state),
+                state: AdvanceInvitationStateExtension.fromSignalingPluginInvitationUserState(callUser.state),
                 extendedData: callUser.extendedData,
               ),
             );
@@ -825,8 +798,7 @@ mixin ZegoSignalingPluginCoreAdvanceInvitationData {
           subTag: 'advance invitation data',
         );
       } else {
-        user.state = AdvanceInvitationStateExtension
-            .fromSignalingPluginInvitationUserState(
+        user.state = AdvanceInvitationStateExtension.fromSignalingPluginInvitationUserState(
           callUser.state,
         );
         user.extendedData = callUser.extendedData;
@@ -861,11 +833,9 @@ mixin ZegoSignalingPluginCoreAdvanceInvitationData {
 
     var requestData = ZegoUIKitAdvanceInvitationSendProtocol.empty();
     try {
-      final extendedDataMap =
-          jsonDecode(event.extendedData) as Map<String, dynamic>;
+      final extendedDataMap = jsonDecode(event.extendedData) as Map<String, dynamic>;
 
-      requestData =
-          ZegoUIKitAdvanceInvitationSendProtocol.fromJson(extendedDataMap);
+      requestData = ZegoUIKitAdvanceInvitationSendProtocol.fromJson(extendedDataMap);
     } catch (e) {
       ZegoLoggerService.logInfo(
         'onIncomingInvitationReceived, event extended data not a '
@@ -907,29 +877,25 @@ mixin ZegoSignalingPluginCoreAdvanceInvitationData {
 
     /// cache session users in existed calling
     for (var userInfo in event.callUserList) {
-      final queryIndex =
-          invitees.indexWhere((user) => user.userID == userInfo.userID);
+      final queryIndex = invitees.indexWhere((user) => user.userID == userInfo.userID);
       if (-1 == queryIndex) {
         if (invitationInitiator.userID != userInfo.userID) {
           /// insert not in invitee, but in call-list, whom calling before
           invitees.add(
             AdvanceInvitationUser(
               userID: userInfo.userID,
-              state: AdvanceInvitationStateExtension
-                  .fromSignalingPluginInvitationUserState(userInfo.state),
+              state: AdvanceInvitationStateExtension.fromSignalingPluginInvitationUserState(userInfo.state),
               extendedData: userInfo.extendedData,
             ),
           );
         }
       } else {
         /// exist, update
-        invitees[queryIndex].state = AdvanceInvitationStateExtension
-            .fromSignalingPluginInvitationUserState(
+        invitees[queryIndex].state = AdvanceInvitationStateExtension.fromSignalingPluginInvitationUserState(
           userInfo.state,
         );
         try {
-          final acceptData = ZegoUIKitAdvanceInvitationAcceptProtocol.fromJson(
-              jsonDecode(userInfo.extendedData));
+          final acceptData = ZegoUIKitAdvanceInvitationAcceptProtocol.fromJson(jsonDecode(userInfo.extendedData));
           if (acceptData.customData.isNotEmpty) {
             invitees[queryIndex].extendedData = acceptData.customData;
           }
@@ -956,8 +922,7 @@ mixin ZegoSignalingPluginCoreAdvanceInvitationData {
     }).toList();
     if (event.inviterID == initiator.id) {
       /// not inviter, which in calling before
-      sessionCallUserList
-          .removeWhere((user) => user.userID == currentInviter.id);
+      sessionCallUserList.removeWhere((user) => user.userID == currentInviter.id);
     }
 
     ZegoUIKit().reporter().report(
